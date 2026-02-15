@@ -8,6 +8,7 @@ import {
     Heart,
     GitCompare,
     Table2,
+    Info,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
     { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
     { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
+    { icon: Info, label: "เกี่ยวกับ", tab: "about" },
 ];
 
 export default function Sidebar() {

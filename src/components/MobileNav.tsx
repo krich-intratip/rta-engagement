@@ -6,6 +6,7 @@ import {
     Heart,
     GitCompare,
     Table2,
+    Info,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 
@@ -15,6 +16,7 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: Heart, label: "ผูกพัน", tab: "engagement" },
     { icon: GitCompare, label: "เทียบ", tab: "compare" },
     { icon: Table2, label: "ข้อมูล", tab: "raw" },
+    { icon: Info, label: "เกี่ยวกับ", tab: "about" },
 ];
 
 export default function MobileNav() {

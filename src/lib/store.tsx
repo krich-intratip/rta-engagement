@@ -4,7 +4,7 @@ import React, { createContext, useContext, useReducer, ReactNode } from "react";
 import { SurveyResponse, AnalysisResult } from "@/types/survey";
 
 export type DataSource = "file" | "google-sheet";
-export type ActiveTab = "overview" | "factors" | "engagement" | "compare" | "raw";
+export type ActiveTab = "overview" | "factors" | "engagement" | "compare" | "raw" | "about";
 
 interface AppState {
     surveyData: SurveyResponse[];

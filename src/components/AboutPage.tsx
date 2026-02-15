@@ -1,0 +1,326 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import {
+    BookOpen,
+    Sparkles,
+    Info,
+    Upload,
+    Globe,
+    BarChart3,
+    PieChart,
+    GitCompare,
+    Table2,
+    Brain,
+    Download,
+    Shield,
+    ExternalLink,
+} from "lucide-react";
+
+type SubTab = "guide" | "features" | "about";
+
+const subTabs: { id: SubTab; label: string; icon: React.ElementType }[] = [
+    { id: "guide", label: "คู่มือการใช้งาน", icon: BookOpen },
+    { id: "features", label: "Features", icon: Sparkles },
+    { id: "about", label: "รายละเอียด", icon: Info },
+];
+
+function GuideContent() {
+    const steps = [
+        {
+            icon: Upload,
+            title: "1. โหลดข้อมูล",
+            desc: "อัปโหลดไฟล์ Excel (.xlsx, .xls) หรือ CSV ที่มีข้อมูลแบบสอบถาม หรือเชื่อมต่อ Google Sheets โดยตรงผ่านปุ่ม \"Google Sheets\" ในหน้าภาพรวม",
+        },
+        {
+            icon: BarChart3,
+            title: "2. ดูภาพรวม (Overview)",
+            desc: "หลังโหลดข้อมูลสำเร็จ ระบบจะแสดงสถิติสรุป ได้แก่ จำนวนผู้ตอบ คะแนนปัจจัยเฉลี่ย คะแนนความผูกพันเฉลี่ย กลุ่มปัจจัยสูงสุด พร้อมกราฟแท่งปัจจัย กราฟเรดาร์ความผูกพัน และข้อมูลเชิงลึก",
+        },
+        {
+            icon: BarChart3,
+            title: "3. วิเคราะห์ปัจจัย (Factors)",
+            desc: "แสดงกราฟแท่งคะแนนเฉลี่ยของแต่ละกลุ่มปัจจัย และกราฟการกระจายตัวของคำตอบในแต่ละระดับ Likert Scale (1-5)",
+        },
+        {
+            icon: PieChart,
+            title: "4. วิเคราะห์ความผูกพัน (Engagement)",
+            desc: "แสดงกราฟเรดาร์ของกลุ่มความผูกพัน ตาราง Correlation Heatmap ระหว่างปัจจัยกับความผูกพัน และข้อมูลเชิงลึกจากการวิเคราะห์",
+        },
+        {
+            icon: GitCompare,
+            title: "5. เปรียบเทียบ (Compare)",
+            desc: "เปรียบเทียบคะแนนระหว่างกลุ่มประชากรศาสตร์ต่างๆ เช่น เพศ ยศ กลุ่มอายุ และหน่วยงาน พร้อมกราฟวงกลมแสดงสัดส่วน",
+        },
+        {
+            icon: Table2,
+            title: "6. ข้อมูลดิบ (Raw Data)",
+            desc: "ดูข้อมูลดิบทั้งหมดในรูปแบบตาราง สามารถค้นหา กรอง และเรียงลำดับข้อมูลได้",
+        },
+        {
+            icon: Download,
+            title: "7. Export HTML",
+            desc: "กดปุ่ม \"Export HTML\" ที่มุมขวาบนของแต่ละหน้า เพื่อดาวน์โหลดหน้าแดชบอร์ดเป็นไฟล์ HTML ที่สามารถเปิดดูแบบ standalone ได้",
+        },
+    ];
+
+    return (
+        <div className="space-y-4">
+            <div className="glass-card p-5">
+                <h3 className="text-lg font-bold mb-2 text-[var(--color-primary-dark)]">วิธีใช้งานระบบ</h3>
+                <p className="text-sm text-[var(--color-text-secondary)] mb-4">
+                    ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก ออกแบบมาเพื่อช่วยวิเคราะห์ข้อมูลแบบสอบถามอย่างครบวงจร
+                </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {steps.map((step, i) => {
+                    const Icon = step.icon;
+                    return (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" as const }}
+                            className="glass-card p-4 flex gap-3"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
+                                <Icon className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-bold mb-1">{step.title}</h4>
+                                <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">{step.desc}</p>
+                            </div>
+                        </motion.div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+}
+
+function FeaturesContent() {
+    const features = [
+        {
+            icon: Upload,
+            title: "รองรับหลายแหล่งข้อมูล",
+            desc: "อัปโหลดไฟล์ Excel/CSV หรือเชื่อมต่อ Google Sheets โดยตรง",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Brain,
+            title: "วิเคราะห์อัตโนมัติ",
+            desc: "คำนวณสถิติ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน Correlation และสร้าง Insights อัตโนมัติ",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: BarChart3,
+            title: "กราฟแบบ Interactive",
+            desc: "กราฟแท่ง เรดาร์ วงกลม Heatmap และกราฟเปรียบเทียบ พร้อม Tooltip แสดงรายละเอียด",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: GitCompare,
+            title: "เปรียบเทียบกลุ่มประชากร",
+            desc: "เปรียบเทียบคะแนนระหว่างเพศ ยศ กลุ่มอายุ และหน่วยงาน",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: PieChart,
+            title: "วิเคราะห์ข้อมูลประชากรศาสตร์",
+            desc: "แสดงสัดส่วนและค่าเฉลี่ยตามกลุ่มประชากรศาสตร์ในรูปแบบกราฟวงกลม",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Table2,
+            title: "ตารางข้อมูลดิบ",
+            desc: "ดูข้อมูลดิบทั้งหมด พร้อมระบบค้นหาและกรองข้อมูล",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: Download,
+            title: "Export HTML",
+            desc: "ส่งออกแดชบอร์ดเป็นไฟล์ HTML ที่เปิดดูได้แบบ standalone พร้อม interactive charts",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: Globe,
+            title: "Responsive Design",
+            desc: "รองรับการใช้งานบนทุกอุปกรณ์ ทั้งคอมพิวเตอร์ แท็บเล็ต และมือถือ",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: Shield,
+            title: "ประมวลผลฝั่ง Client",
+            desc: "ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลไปยังเซิร์ฟเวอร์ภายนอก",
+            gradient: "bg-gradient-primary",
+        },
+    ];
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {features.map((feat, i) => {
+                const Icon = feat.icon;
+                return (
+                    <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.06, duration: 0.4, ease: "easeOut" as const }}
+                        className="glass-card p-5 flex flex-col gap-3"
+                    >
+                        <div className={`w-10 h-10 rounded-xl ${feat.gradient} flex items-center justify-center`}>
+                            <Icon className="w-5 h-5 text-white" />
+                        </div>
+                        <h4 className="text-sm font-bold">{feat.title}</h4>
+                        <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">{feat.desc}</p>
+                    </motion.div>
+                );
+            })}
+        </div>
+    );
+}
+
+function AboutContent() {
+    return (
+        <div className="max-w-2xl mx-auto space-y-6">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-8 text-center"
+            >
+                <Image
+                    src="/RTA.png"
+                    alt="RTA Logo"
+                    width={80}
+                    height={80}
+                    className="mx-auto mb-4 rounded-2xl object-contain"
+                />
+                <h2 className="text-xl font-bold mb-1">RTA Engagement & Happiness Analysis</h2>
+                <p className="text-sm text-[var(--color-text-secondary)] mb-4">
+                    ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
+                </p>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
+                    Version 1.0.0
+                </div>
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="glass-card p-6 space-y-4"
+            >
+                <h3 className="text-lg font-bold text-[var(--color-primary-dark)]">ผู้พัฒนาโปรแกรม</h3>
+                <div className="flex items-center gap-4">
+                    <Image
+                        src="/pkresearch.jpg"
+                        alt="Developer"
+                        width={64}
+                        height={64}
+                        className="rounded-xl object-cover"
+                    />
+                    <div>
+                        <p className="font-bold">พล.ท.ดร.กริช อินทราทิพย์</p>
+                        <a
+                            href="https://krich-portfolio.pk-research.work"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-sm text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] transition-colors mt-1"
+                        >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                            krich-portfolio.pk-research.work
+                        </a>
+                    </div>
+                </div>
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="glass-card p-6 space-y-3"
+            >
+                <h3 className="text-lg font-bold text-[var(--color-primary-dark)]">ข้อมูลโปรแกรม</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
+                        <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
+                        <p className="font-bold">1.0.0</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
+                        <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
+                        <p className="font-bold">15 กุมภาพันธ์ 2569</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
+                        <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
+                        <p className="font-bold">Next.js + React</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
+                        <p className="text-[var(--color-text-secondary)] text-xs">License</p>
+                        <p className="font-bold">Proprietary</p>
+                    </div>
+                </div>
+            </motion.div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-center text-xs text-[var(--color-text-light)] py-4"
+            >
+                <p>© 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
+                <p className="mt-1">RTA Engagement & Happiness Analysis System</p>
+            </motion.div>
+        </div>
+    );
+}
+
+export default function AboutPage() {
+    const [activeSubTab, setActiveSubTab] = useState<SubTab>("guide");
+
+    return (
+        <div className="space-y-5">
+            {/* Sub-tab navigation */}
+            <div className="glass-card p-2 flex gap-1 overflow-x-auto">
+                {subTabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeSubTab === tab.id;
+                    return (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveSubTab(tab.id)}
+                            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap
+                                ${isActive
+                                    ? "bg-[var(--color-primary)] text-white shadow-md"
+                                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 hover:text-[var(--color-primary-dark)]"
+                                }`}
+                        >
+                            <Icon className="w-4 h-4" />
+                            {tab.label}
+                        </button>
+                    );
+                })}
+            </div>
+
+            {/* Sub-tab content */}
+            <AnimatePresence mode="wait">
+                {activeSubTab === "guide" && (
+                    <motion.div key="guide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <GuideContent />
+                    </motion.div>
+                )}
+                {activeSubTab === "features" && (
+                    <motion.div key="features" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <FeaturesContent />
+                    </motion.div>
+                )}
+                {activeSubTab === "about" && (
+                    <motion.div key="about" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <AboutContent />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
