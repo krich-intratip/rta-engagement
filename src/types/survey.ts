@@ -177,7 +177,7 @@ export interface DemographicBreakdown {
 }
 
 export interface Insight {
-    type: "strength" | "improvement" | "info";
+    type: "strength" | "improvement" | "info" | "analysis" | "recommendation";
     title: string;
     description: string;
     icon: string;
