@@ -68,11 +68,10 @@ const AppContext = createContext<{
 export function AppProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(reducer, initialState);
     return (
-        <AppContext.Provider value= {{ state, dispatch }
-}>
-    { children }
-    </AppContext.Provider>
-  );
+        <AppContext.Provider value={{ state, dispatch }}>
+            {children}
+        </AppContext.Provider>
+    );
 }
 
 export function useAppState() {

@@ -39,8 +39,8 @@ export default function FactorBarChart() {
                             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                             fontSize: "13px",
                         }}
-                        formatter={(value: number, name: string) => [`${value.toFixed(2)}`, "ค่าเฉลี่ย"]}
-                        labelFormatter={(label: string) => `ปัจจัย: ${label}`}
+                        formatter={(value, name) => [`${(Number(value ?? 0)).toFixed(2)}`, "ค่าเฉลี่ย"]}
+                        labelFormatter={(label) => `ปัจจัย: ${label}`}
                     />
                     <Bar dataKey="mean" radius={[0, 8, 8, 0]} barSize={24}>
                         {chartData.map((entry, index) => (

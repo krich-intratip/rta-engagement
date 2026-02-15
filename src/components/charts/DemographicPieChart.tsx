@@ -60,7 +60,7 @@ export default function DemographicPieChart() {
                         paddingAngle={3}
                         dataKey="value"
                         nameKey="name"
-                        label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                        label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
                         labelLine={true}
                         animationDuration={800}
                     >
@@ -75,10 +75,10 @@ export default function DemographicPieChart() {
                             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                             fontSize: "13px",
                         }}
-                        formatter={(value: number, name: string, props: { payload: { engagementMean: string; factorMean: string } }) => {
-                            const p = props.payload;
+                        formatter={(value, name, props) => {
+                            const p = props?.payload as { engagementMean: string; factorMean: string } | undefined;
                             return [
-                                `${value} คน | ผูกพัน: ${p.engagementMean} | ปัจจัย: ${p.factorMean}`,
+                                `${value ?? 0} คน | ผูกพัน: ${p?.engagementMean ?? "-"} | ปัจจัย: ${p?.factorMean ?? "-"}`,
                                 name,
                             ];
                         }}

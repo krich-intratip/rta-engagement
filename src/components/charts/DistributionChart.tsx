@@ -92,7 +92,7 @@ export default function DistributionChart() {
                             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                             fontSize: "12px",
                         }}
-                        formatter={(value: number, name: string) => [`${value}%`, name]}
+                        formatter={(value, name) => [`${value ?? 0}%`, name]}
                     />
                     <Legend wrapperStyle={{ fontSize: "11px" }} />
                     {Object.entries(LIKERT_COLORS).reverse().map(([key, color]) => (
