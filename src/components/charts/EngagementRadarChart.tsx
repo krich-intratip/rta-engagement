@@ -11,8 +11,9 @@ import {
     Tooltip,
 } from "recharts";
 import { useAppState } from "@/lib/store";
+import ChartModal from "@/components/ChartModal";
 
-export default function EngagementRadarChart() {
+function EngagementRadarContent({ height = 350 }: { height?: number }) {
     const { state } = useAppState();
     const result = state.analysisResult;
     if (!result || result.engagementStats.length === 0) return null;
@@ -24,31 +25,28 @@ export default function EngagementRadarChart() {
     }));
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-5"
-        >
-            <h3 className="text-base font-bold mb-4">มิติความผูกพัน (Engagement Dimensions)</h3>
-            <ResponsiveContainer width="100%" height={350}>
+        <>
+            <ResponsiveContainer width="100%" height={height}>
                 <RadarChart data={chartData}>
-                    <PolarGrid stroke="#E8ECF1" />
-                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12, fill: "#636E72" }} />
-                    <PolarRadiusAxis domain={[0, 5]} tickCount={6} tick={{ fontSize: 10 }} />
+                    <PolarGrid stroke="var(--color-chart-grid)" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12, fill: "var(--color-chart-text)" }} />
+                    <PolarRadiusAxis domain={[0, 5]} tickCount={6} tick={{ fontSize: 10, fill: "var(--color-chart-text)" }} />
                     <Tooltip
                         contentStyle={{
                             borderRadius: "12px",
-                            border: "1px solid #E8ECF1",
+                            border: "1px solid var(--color-tooltip-border)",
+                            background: "var(--color-tooltip-bg)",
                             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                             fontSize: "13px",
+                            color: "var(--color-text)",
                         }}
                     />
                     <Radar
                         name="คะแนนเฉลี่ย"
                         dataKey="score"
-                        stroke="#C3B1E1"
-                        fill="#C3B1E1"
-                        fillOpacity={0.4}
+                        stroke="#9B59B6"
+                        fill="#9B59B6"
+                        fillOpacity={0.35}
                         strokeWidth={2}
                     />
                 </RadarChart>
@@ -61,6 +59,28 @@ export default function EngagementRadarChart() {
                     </div>
                 ))}
             </div>
+        </>
+    );
+}
+
+export default function EngagementRadarChart() {
+    const { state } = useAppState();
+    const result = state.analysisResult;
+    if (!result || result.engagementStats.length === 0) return null;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-5"
+        >
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold">มิติความผูกพัน (Engagement Dimensions)</h3>
+                <ChartModal title="มิติความผูกพัน (Engagement Dimensions)">
+                    <EngagementRadarContent height={550} />
+                </ChartModal>
+            </div>
+            <EngagementRadarContent />
         </motion.div>
     );
 }

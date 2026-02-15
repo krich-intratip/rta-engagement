@@ -17,6 +17,10 @@ import {
     Download,
     Shield,
     ExternalLink,
+    Link,
+    Maximize2,
+    Moon,
+    Sun,
 } from "lucide-react";
 
 type SubTab = "guide" | "features" | "about";
@@ -32,7 +36,7 @@ function GuideContent() {
         {
             icon: Upload,
             title: "1. โหลดข้อมูล",
-            desc: "อัปโหลดไฟล์ Excel (.xlsx, .xls) หรือ CSV ที่มีข้อมูลแบบสอบถาม หรือเชื่อมต่อ Google Sheets โดยตรงผ่านปุ่ม \"Google Sheets\" ในหน้าภาพรวม",
+            desc: "อัปโหลดไฟล์ Excel (.xlsx, .xls) หรือ CSV หรือเชื่อมต่อ Google Sheets โดยตรง หรือวาง URL ของ Google Sheets ที่ต้องการได้เลย",
         },
         {
             icon: BarChart3,
@@ -62,7 +66,17 @@ function GuideContent() {
         {
             icon: Download,
             title: "7. Export HTML",
-            desc: "กดปุ่ม \"Export HTML\" ที่มุมขวาบนของแต่ละหน้า เพื่อดาวน์โหลดหน้าแดชบอร์ดเป็นไฟล์ HTML ที่สามารถเปิดดูแบบ standalone ได้",
+            desc: "กดปุ่ม \"Export HTML\" ที่มุมขวาบนของแต่ละหน้า เพื่อดาวน์โหลดหน้าแดชบอร์ดเป็นภาพ HTML คุณภาพสูง",
+        },
+        {
+            icon: Maximize2,
+            title: "8. ขยายกราฟ",
+            desc: "กดปุ่มขยายที่มุมขวาบนของแต่ละกราฟ เพื่อดูกราฟแบบเต็มจอ สะดวกในการนำเสนอ",
+        },
+        {
+            icon: Moon,
+            title: "9. สลับ Light/Dark Mode",
+            desc: "กดปุ่ม Moon/Sun ที่ Sidebar ด้านซ้ายเพื่อสลับโหมดสีตามความต้องการ ระบบจะจำค่าที่เลือกไว้",
         },
     ];
 
@@ -105,20 +119,26 @@ function FeaturesContent() {
         {
             icon: Upload,
             title: "รองรับหลายแหล่งข้อมูล",
-            desc: "อัปโหลดไฟล์ Excel/CSV หรือเชื่อมต่อ Google Sheets โดยตรง",
+            desc: "อัปโหลดไฟล์ Excel/CSV, เชื่อมต่อ Google Sheets ที่ตั้งค่าไว้ หรือวาง URL ของ Google Sheets ใดก็ได้",
             gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Link,
+            title: "ดึงข้อมูลจาก URL",
+            desc: "วาง URL ของ Google Sheets ที่เป็น Public เพื่อดึงข้อมูลมาวิเคราะห์ได้ทันที",
+            gradient: "bg-gradient-secondary",
         },
         {
             icon: Brain,
             title: "วิเคราะห์อัตโนมัติ",
             desc: "คำนวณสถิติ ค่าเฉลี่ย ส่วนเบี่ยงเบนมาตรฐาน Correlation และสร้าง Insights อัตโนมัติ",
-            gradient: "bg-gradient-secondary",
+            gradient: "bg-gradient-accent",
         },
         {
             icon: BarChart3,
             title: "กราฟแบบ Interactive",
-            desc: "กราฟแท่ง เรดาร์ วงกลม Heatmap และกราฟเปรียบเทียบ พร้อม Tooltip แสดงรายละเอียด",
-            gradient: "bg-gradient-accent",
+            desc: "กราฟแท่ง เรดาร์ วงกลม Heatmap และกราฟเปรียบเทียบ พร้อม Tooltip และขยายเต็มจอได้",
+            gradient: "bg-gradient-lavender",
         },
         {
             icon: GitCompare,
@@ -141,8 +161,20 @@ function FeaturesContent() {
         {
             icon: Download,
             title: "Export HTML",
-            desc: "ส่งออกแดชบอร์ดเป็นไฟล์ HTML ที่เปิดดูได้แบบ standalone พร้อม interactive charts",
+            desc: "ส่งออกแดชบอร์ดเป็นภาพ HTML คุณภาพสูง เปิดดูได้แบบ standalone",
             gradient: "bg-gradient-accent",
+        },
+        {
+            icon: Maximize2,
+            title: "ขยายกราฟเต็มจอ",
+            desc: "กดปุ่มขยายที่มุมขวาบนของแต่ละกราฟ เพื่อดูรายละเอียดแบบเต็มจอ",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: Sun,
+            title: "Light / Dark Mode",
+            desc: "สลับโหมดสีระหว่าง Light และ Dark ได้ตามต้องการ ระบบจำค่าที่เลือกไว้",
+            gradient: "bg-gradient-primary",
         },
         {
             icon: Globe,
@@ -202,7 +234,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 1.0.0
+                    Version 1.1.0
                 </div>
             </motion.div>
 
@@ -246,11 +278,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">1.0.0</p>
+                        <p className="font-bold">1.1.0</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">15 กุมภาพันธ์ 2569</p>
+                        <p className="font-bold">16 กุมภาพันธ์ 2569</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>

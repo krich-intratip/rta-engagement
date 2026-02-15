@@ -1,6 +1,6 @@
 {
   "name": "rta-engagement",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,6 +12,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.34.0",
+    "html2canvas-pro": "^1.6.7",
     "lucide-react": "^0.564.0",
     "next": "^15.1.0",
     "react": "^19.0.0",

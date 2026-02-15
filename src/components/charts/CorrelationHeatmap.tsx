@@ -2,25 +2,25 @@
 
 import { motion } from "framer-motion";
 import { useAppState } from "@/lib/store";
+import ChartModal from "@/components/ChartModal";
 
 const getCorrelationColor = (r: number): string => {
-    if (r >= 0.8) return "#00B894";
-    if (r >= 0.6) return "#55EFC4";
-    if (r >= 0.4) return "#A8D8B9";
-    if (r >= 0.2) return "#FDDCB5";
-    if (r >= 0) return "#F5D76E";
-    if (r >= -0.2) return "#FDCB6E";
-    if (r >= -0.4) return "#F4B8C1";
-    if (r >= -0.6) return "#E8909E";
-    return "#E17055";
+    if (r >= 0.8) return "#2ECC71";
+    if (r >= 0.6) return "#1ABC9C";
+    if (r >= 0.4) return "#27AE60";
+    if (r >= 0.2) return "#F39C12";
+    if (r >= 0) return "#F1C40F";
+    if (r >= -0.2) return "#E67E22";
+    if (r >= -0.4) return "#E74C8B";
+    if (r >= -0.6) return "#E74C3C";
+    return "#C0392B";
 };
 
-export default function CorrelationHeatmap() {
+function HeatmapContent() {
     const { state } = useAppState();
     const result = state.analysisResult;
     if (!result || result.correlations.length === 0) return null;
 
-    // Get unique group names
     const factorGroups = [...new Set(result.correlations.map((c) => c.groupA))];
     const engGroups = [...new Set(result.correlations.map((c) => c.groupB))];
 
@@ -32,12 +32,7 @@ export default function CorrelationHeatmap() {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-5 overflow-x-auto"
-        >
-            <h3 className="text-base font-bold mb-4">สหสัมพันธ์ระหว่างปัจจัยกับความผูกพัน</h3>
+        <>
             <table className="w-full text-xs border-collapse">
                 <thead>
                     <tr>
@@ -62,7 +57,7 @@ export default function CorrelationHeatmap() {
                                             className="rounded-lg p-2 text-center font-bold"
                                             style={{
                                                 backgroundColor: getCorrelationColor(r),
-                                                color: r >= 0.6 ? "white" : "var(--color-text)",
+                                                color: r >= 0.6 || r <= -0.6 ? "white" : "var(--color-text)",
                                             }}
                                             title={`${fg} ↔ ${eg}: r = ${r.toFixed(3)}`}
                                         >
@@ -75,7 +70,6 @@ export default function CorrelationHeatmap() {
                     ))}
                 </tbody>
             </table>
-            {/* Legend */}
             <div className="flex items-center gap-1 mt-4 text-xs text-[var(--color-text-secondary)] justify-center">
                 <span>-1.0</span>
                 <div className="flex h-3">
@@ -85,6 +79,28 @@ export default function CorrelationHeatmap() {
                 </div>
                 <span>+1.0</span>
             </div>
+        </>
+    );
+}
+
+export default function CorrelationHeatmap() {
+    const { state } = useAppState();
+    const result = state.analysisResult;
+    if (!result || result.correlations.length === 0) return null;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-5 overflow-x-auto"
+        >
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold">สหสัมพันธ์ระหว่างปัจจัยกับความผูกพัน</h3>
+                <ChartModal title="สหสัมพันธ์ระหว่างปัจจัยกับความผูกพัน">
+                    <HeatmapContent />
+                </ChartModal>
+            </div>
+            <HeatmapContent />
         </motion.div>
     );
 }

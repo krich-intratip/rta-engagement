@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { AppProvider } from "@/lib/store";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
     title: "RTA Engagement & Happiness Analysis",
@@ -16,7 +17,9 @@ export default function RootLayout({
     return (
         <html lang="th">
             <body className="antialiased">
-                <AppProvider>{children}</AppProvider>
+                <ThemeProvider>
+                    <AppProvider>{children}</AppProvider>
+                </ThemeProvider>
             </body>
         </html>
     );

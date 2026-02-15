@@ -4,8 +4,9 @@ import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { useAppState } from "@/lib/store";
 import { useState } from "react";
+import ChartModal from "@/components/ChartModal";
 
-const COLORS = ["#6C9BCF", "#A8D8B9", "#F4B8C1", "#C3B1E1", "#FDDCB5", "#F5D76E", "#7BC09A", "#E8909E", "#A3C4E9", "#E17055"];
+const COLORS = ["#3B7DD8", "#2ECC71", "#E74C8B", "#9B59B6", "#F39C12", "#F1C40F", "#1ABC9C", "#E74C3C", "#3498DB", "#E67E22"];
 const DEMO_FIELDS = [
     { key: "byGender", label: "เพศ" },
     { key: "byRank", label: "ชั้นยศ" },
@@ -13,11 +14,9 @@ const DEMO_FIELDS = [
     { key: "byUnit", label: "สังกัด" },
 ] as const;
 
-export default function DemographicPieChart() {
+function DemographicPieContent({ selectedField, height = 300 }: { selectedField: string; height?: number }) {
     const { state } = useAppState();
     const result = state.analysisResult;
-    const [selectedField, setSelectedField] = useState<string>("byGender");
-
     if (!result) return null;
 
     const breakdown = result.demographicBreakdown[selectedField as keyof typeof result.demographicBreakdown];
@@ -31,13 +30,65 @@ export default function DemographicPieChart() {
     }));
 
     return (
+        <ResponsiveContainer width="100%" height={height}>
+            <PieChart>
+                <Pie
+                    data={chartData}
+                    innerRadius={height * 0.18}
+                    outerRadius={height * 0.35}
+                    paddingAngle={3}
+                    dataKey="value"
+                    nameKey="name"
+                    label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
+                    labelLine={true}
+                    animationDuration={800}
+                >
+                    {chartData.map((_, index) => (
+                        <Cell key={index} fill={COLORS[index % COLORS.length]} stroke="var(--color-surface)" strokeWidth={2} />
+                    ))}
+                </Pie>
+                <Tooltip
+                    contentStyle={{
+                        borderRadius: "12px",
+                        border: "1px solid var(--color-tooltip-border)",
+                        background: "var(--color-tooltip-bg)",
+                        boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                        fontSize: "13px",
+                        color: "var(--color-text)",
+                    }}
+                    formatter={(value, name, props) => {
+                        const p = props?.payload as { engagementMean: string; factorMean: string } | undefined;
+                        return [
+                            `${value ?? 0} คน | ผูกพัน: ${p?.engagementMean ?? "-"} | ปัจจัย: ${p?.factorMean ?? "-"}`,
+                            name,
+                        ];
+                    }}
+                />
+            </PieChart>
+        </ResponsiveContainer>
+    );
+}
+
+export default function DemographicPieChart() {
+    const { state } = useAppState();
+    const result = state.analysisResult;
+    const [selectedField, setSelectedField] = useState<string>("byGender");
+
+    if (!result) return null;
+
+    return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="glass-card p-5"
         >
             <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-                <h3 className="text-base font-bold">สัดส่วนตามข้อมูลประชากร</h3>
+                <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold">สัดส่วนตามข้อมูลประชากร</h3>
+                    <ChartModal title="สัดส่วนตามข้อมูลประชากร">
+                        <DemographicPieContent selectedField={selectedField} height={500} />
+                    </ChartModal>
+                </div>
                 <div className="flex gap-1">
                     {DEMO_FIELDS.map((f) => (
                         <button
@@ -51,40 +102,7 @@ export default function DemographicPieChart() {
                 </div>
             </div>
 
-            <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                    <Pie
-                        data={chartData}
-                        innerRadius={60}
-                        outerRadius={110}
-                        paddingAngle={3}
-                        dataKey="value"
-                        nameKey="name"
-                        label={({ name, percent }) => `${name} (${((percent ?? 0) * 100).toFixed(0)}%)`}
-                        labelLine={true}
-                        animationDuration={800}
-                    >
-                        {chartData.map((_, index) => (
-                            <Cell key={index} fill={COLORS[index % COLORS.length]} stroke="white" strokeWidth={2} />
-                        ))}
-                    </Pie>
-                    <Tooltip
-                        contentStyle={{
-                            borderRadius: "12px",
-                            border: "1px solid #E8ECF1",
-                            boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-                            fontSize: "13px",
-                        }}
-                        formatter={(value, name, props) => {
-                            const p = props?.payload as { engagementMean: string; factorMean: string } | undefined;
-                            return [
-                                `${value ?? 0} คน | ผูกพัน: ${p?.engagementMean ?? "-"} | ปัจจัย: ${p?.factorMean ?? "-"}`,
-                                name,
-                            ];
-                        }}
-                    />
-                </PieChart>
-            </ResponsiveContainer>
+            <DemographicPieContent selectedField={selectedField} />
         </motion.div>
     );
 }

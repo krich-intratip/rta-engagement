@@ -4,10 +4,11 @@ import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { useAppState } from "@/lib/store";
 import { interpretMean } from "@/types/survey";
+import ChartModal from "@/components/ChartModal";
 
-const COLORS = ["#6C9BCF", "#A8D8B9", "#F4B8C1", "#C3B1E1", "#FDDCB5", "#F5D76E", "#7BC09A", "#E8909E"];
+const COLORS = ["#3B7DD8", "#2ECC71", "#E74C8B", "#9B59B6", "#F39C12", "#F1C40F", "#1ABC9C", "#E74C3C"];
 
-export default function FactorBarChart() {
+function FactorBarChartContent({ height = 380 }: { height?: number }) {
     const { state } = useAppState();
     const result = state.analysisResult;
     if (!result || result.factorStats.length === 0) return null;
@@ -21,23 +22,20 @@ export default function FactorBarChart() {
     }));
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-5"
-        >
-            <h3 className="text-base font-bold mb-4">คะแนนเฉลี่ยรายกลุ่มปัจจัย</h3>
-            <ResponsiveContainer width="100%" height={380}>
+        <>
+            <ResponsiveContainer width="100%" height={height}>
                 <BarChart data={chartData} layout="vertical" margin={{ left: 20, right: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#E8ECF1" />
-                    <XAxis type="number" domain={[0, 5]} tickCount={6} fontSize={12} />
-                    <YAxis type="category" dataKey="name" width={140} fontSize={11} tick={{ fill: "#636E72" }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-chart-grid)" />
+                    <XAxis type="number" domain={[0, 5]} tickCount={6} fontSize={12} tick={{ fill: "var(--color-chart-text)" }} />
+                    <YAxis type="category" dataKey="name" width={140} fontSize={11} tick={{ fill: "var(--color-chart-text)" }} />
                     <Tooltip
                         contentStyle={{
                             borderRadius: "12px",
-                            border: "1px solid #E8ECF1",
+                            border: "1px solid var(--color-tooltip-border)",
+                            background: "var(--color-tooltip-bg)",
                             boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
                             fontSize: "13px",
+                            color: "var(--color-text)",
                         }}
                         formatter={(value, name) => [`${(Number(value ?? 0)).toFixed(2)}`, "ค่าเฉลี่ย"]}
                         labelFormatter={(label) => `ปัจจัย: ${label}`}
@@ -56,6 +54,28 @@ export default function FactorBarChart() {
                     </span>
                 ))}
             </div>
+        </>
+    );
+}
+
+export default function FactorBarChart() {
+    const { state } = useAppState();
+    const result = state.analysisResult;
+    if (!result || result.factorStats.length === 0) return null;
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="glass-card p-5"
+        >
+            <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold">คะแนนเฉลี่ยรายกลุ่มปัจจัย</h3>
+                <ChartModal title="คะแนนเฉลี่ยรายกลุ่มปัจจัย">
+                    <FactorBarChartContent height={600} />
+                </ChartModal>
+            </div>
+            <FactorBarChartContent />
         </motion.div>
     );
 }

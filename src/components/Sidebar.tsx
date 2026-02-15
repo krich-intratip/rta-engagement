@@ -11,8 +11,11 @@ import {
     Info,
     ChevronLeft,
     ChevronRight,
+    Sun,
+    Moon,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
+import { useTheme } from "@/components/ThemeProvider";
 import { useState } from "react";
 
 const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
@@ -26,13 +29,14 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
 
 export default function Sidebar() {
     const { state, dispatch } = useAppState();
+    const { theme, toggleTheme } = useTheme();
     const [collapsed, setCollapsed] = useState(false);
 
     return (
         <motion.aside
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className={`hidden md:flex flex-col ${collapsed ? "w-20" : "w-64"} transition-all duration-300 h-screen sticky top-0 bg-white/80 backdrop-blur-lg border-r border-[var(--color-border)]`}
+            className={`hidden md:flex flex-col ${collapsed ? "w-20" : "w-64"} transition-all duration-300 h-screen sticky top-0 bg-[var(--color-sidebar-bg)] backdrop-blur-lg border-r border-[var(--color-border)]`}
         >
             {/* Logo */}
             <div className="p-4 flex items-center gap-3 border-b border-[var(--color-border)]">
@@ -73,6 +77,15 @@ export default function Sidebar() {
                     );
                 })}
             </nav>
+
+            {/* Theme toggle */}
+            <button
+                onClick={toggleTheme}
+                className="mx-3 mb-1 flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 hover:text-[var(--color-primary-dark)] transition-all duration-200"
+            >
+                {theme === "light" ? <Moon className="w-5 h-5 flex-shrink-0" /> : <Sun className="w-5 h-5 flex-shrink-0" />}
+                {!collapsed && <span>{theme === "light" ? "Dark Mode" : "Light Mode"}</span>}
+            </button>
 
             {/* Collapse btn */}
             <button
