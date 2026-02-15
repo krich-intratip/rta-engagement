@@ -14,6 +14,7 @@ import DemographicPieChart from "@/components/charts/DemographicPieChart";
 import CompareGroupChart from "@/components/charts/CompareGroupChart";
 import DistributionChart from "@/components/charts/DistributionChart";
 import { useAppState } from "@/lib/store";
+import Image from "next/image";
 
 function TabContent() {
     const { state } = useAppState();
@@ -136,11 +137,13 @@ export default function HomePage() {
             <main className="flex-1 p-4 md:p-6 pb-20 md:pb-6 overflow-auto">
                 {/* Header for mobile */}
                 <div className="md:hidden flex items-center gap-3 mb-4">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-primary flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                    </div>
+                    <Image
+                        src="/RTA.png"
+                        alt="RTA Logo"
+                        width={36}
+                        height={36}
+                        className="rounded-xl object-contain"
+                    />
                     <div>
                         <h1 className="text-base font-bold">RTA Analysis</h1>
                         <p className="text-xs text-[var(--color-text-secondary)]">Engagement & Happiness</p>

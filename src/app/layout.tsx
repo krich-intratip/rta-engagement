@@ -5,7 +5,7 @@ import { AppProvider } from "@/lib/store";
 export const metadata: Metadata = {
     title: "RTA Engagement & Happiness Analysis",
     description: "ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก",
-    icons: { icon: "/favicon.ico" },
+    icons: { icon: "/pkresearch.jpg" },
 };
 
 export default function RootLayout({

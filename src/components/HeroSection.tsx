@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
+import Image from "next/image";
 import { Users, TrendingUp, Heart, Shield } from "lucide-react";
 import { useAppState } from "@/lib/store";
 import { useEffect, useRef } from "react";
@@ -42,9 +43,14 @@ export default function HeroSection() {
                 animate={{ opacity: 1, y: 0 }}
                 className="glass-card p-8 text-center"
             >
-                <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gradient-primary flex items-center justify-center">
-                    <Shield className="w-10 h-10 text-white" />
-                </div>
+                <Image
+                    src="/RTA.png"
+                    alt="RTA Logo"
+                    width={80}
+                    height={80}
+                    className="mx-auto mb-4 rounded-2xl object-contain"
+                    priority
+                />
                 <h2 className="text-2xl font-bold mb-2">ระบบวิเคราะห์ความผูกพันและความสุข</h2>
                 <p className="text-[var(--color-text-secondary)] text-lg mb-1">กองทัพบก (Royal Thai Army)</p>
                 <p className="text-sm text-[var(--color-text-light)]">

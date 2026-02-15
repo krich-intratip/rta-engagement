@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import {
     LayoutDashboard,
     BarChart3,
     Heart,
     GitCompare,
     Table2,
-    Shield,
     ChevronLeft,
     ChevronRight,
 } from "lucide-react";
@@ -34,9 +34,14 @@ export default function Sidebar() {
         >
             {/* Logo */}
             <div className="p-4 flex items-center gap-3 border-b border-[var(--color-border)]">
-                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 text-white" />
-                </div>
+                <Image
+                    src="/RTA.png"
+                    alt="RTA Logo"
+                    width={40}
+                    height={40}
+                    className="rounded-xl object-contain flex-shrink-0"
+                    priority
+                />
                 {!collapsed && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                         <h1 className="text-sm font-bold text-[var(--color-text)]">RTA Analysis</h1>
