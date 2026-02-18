@@ -12,6 +12,13 @@ const DEMO_FIELDS = [
     { key: "byRank", label: "ชั้นยศ" },
     { key: "byAgeGroup", label: "เจเนอเรชั่น" },
     { key: "byUnit", label: "สังกัด" },
+    { key: "byMaritalStatus", label: "สถานภาพ" },
+    { key: "byEducation", label: "การศึกษา" },
+    { key: "byServiceYears", label: "อายุราชการ" },
+    { key: "byIncome", label: "รายได้" },
+    { key: "byHousing", label: "ที่อยู่อาศัย" },
+    { key: "byFamilyInArmy", label: "ครอบครัวใน ทบ." },
+    { key: "byHasDependents", label: "ภาระอุปการะ" },
 ] as const;
 
 function DemographicPieContent({ selectedField, height = 300 }: { selectedField: string; height?: number }) {
@@ -89,7 +96,7 @@ export default function DemographicPieChart() {
                         <DemographicPieContent selectedField={selectedField} height={500} />
                     </ChartModal>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                     {DEMO_FIELDS.map((f) => (
                         <button
                             key={f.key}

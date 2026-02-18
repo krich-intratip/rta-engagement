@@ -20,6 +20,13 @@ const DEMO_FIELDS = [
     { key: "byRank", label: "ชั้นยศ" },
     { key: "byAgeGroup", label: "เจเนอเรชั่น" },
     { key: "byUnit", label: "สังกัด" },
+    { key: "byMaritalStatus", label: "สถานภาพ" },
+    { key: "byEducation", label: "การศึกษา" },
+    { key: "byServiceYears", label: "อายุราชการ" },
+    { key: "byIncome", label: "รายได้" },
+    { key: "byHousing", label: "ที่อยู่อาศัย" },
+    { key: "byFamilyInArmy", label: "ครอบครัวใน ทบ." },
+    { key: "byHasDependents", label: "ภาระอุปการะ" },
 ] as const;
 
 function CompareGroupContent({ selectedField, height = 350 }: { selectedField: string; height?: number }) {
@@ -88,7 +95,7 @@ export default function CompareGroupChart() {
                         <CompareGroupContent selectedField={selectedField} height={550} />
                     </ChartModal>
                 </div>
-                <div className="flex gap-1">
+                <div className="flex gap-1 flex-wrap">
                     {DEMO_FIELDS.map((f) => (
                         <button
                             key={f.key}

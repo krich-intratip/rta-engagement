@@ -169,11 +169,20 @@ export interface ItemStat {
     sd: number;
 }
 
+export type DemographicGroupStats = Record<string, { factorMean: number; engagementMean: number; count: number }>;
+
 export interface DemographicBreakdown {
-    byGender: Record<string, { factorMean: number; engagementMean: number; count: number }>;
-    byRank: Record<string, { factorMean: number; engagementMean: number; count: number }>;
-    byAgeGroup: Record<string, { factorMean: number; engagementMean: number; count: number }>;
-    byUnit: Record<string, { factorMean: number; engagementMean: number; count: number }>;
+    byGender: DemographicGroupStats;
+    byRank: DemographicGroupStats;
+    byAgeGroup: DemographicGroupStats;
+    byUnit: DemographicGroupStats;
+    byMaritalStatus: DemographicGroupStats;
+    byEducation: DemographicGroupStats;
+    byServiceYears: DemographicGroupStats;
+    byIncome: DemographicGroupStats;
+    byHousing: DemographicGroupStats;
+    byFamilyInArmy: DemographicGroupStats;
+    byHasDependents: DemographicGroupStats;
 }
 
 export interface Insight {

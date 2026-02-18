@@ -15,14 +15,14 @@ export default function RawDataTable() {
     const filtered = useMemo(() => {
         if (!search.trim()) return state.surveyData;
         const q = search.toLowerCase();
-        return state.surveyData.filter(
-            (r) =>
-                r.demographics.gender.toLowerCase().includes(q) ||
-                r.demographics.rank.toLowerCase().includes(q) ||
-                r.demographics.unit.toLowerCase().includes(q) ||
-                r.demographics.ageGroup.toLowerCase().includes(q) ||
-                r.unitClassification.toLowerCase().includes(q)
-        );
+        return state.surveyData.filter((r) => {
+            const d = r.demographics;
+            return [
+                d.gender, d.rank, d.unit, d.ageGroup, d.maritalStatus,
+                d.education, d.serviceYears, d.income, d.housing,
+                d.familyInArmy, d.hasDependents, r.unitClassification,
+            ].some((v) => v.toLowerCase().includes(q));
+        });
     }, [state.surveyData, search]);
 
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -30,11 +30,19 @@ export default function RawDataTable() {
 
     const handleExportCsv = () => {
         const headers = [
-            "ลำดับ", "เพศ", "ชั้นยศ", "สังกัด", "เจเนอเรชั่น", "สถานภาพ",
-            "การศึกษา", "อายุราชการ", "รายได้", "ที่อยู่",
+            "ลำดับ", "เพศ", "ชั้นยศ", "สังกัด", "เจเนอเรชั่น",
+            "สถานภาพสมรส", "ระดับการศึกษา", "อายุราชการ", "รายได้ต่อเดือน",
+            "ประเภทที่อยู่อาศัย", "ครอบครัวใน ทบ.", "รายละเอียดครอบครัวใน ทบ.",
+            "ภาระอุปการะ", "รายละเอียดภาระอุปการะ",
             ...Array.from({ length: 29 }, (_, i) => `ปัจจัย_${i + 1}`),
             ...Array.from({ length: 11 }, (_, i) => `ผูกพัน_${i + 1}`),
         ];
+        const escapeCell = (v: string | number) => {
+            const s = String(v);
+            return s.includes(",") || s.includes('"') || s.includes("\n")
+                ? `"${s.replace(/"/g, '""')}"`
+                : s;
+        };
         const rows = state.surveyData.map((r, idx) => [
             idx + 1,
             r.demographics.gender,
@@ -46,10 +54,14 @@ export default function RawDataTable() {
             r.demographics.serviceYears,
             r.demographics.income,
             r.demographics.housing,
+            r.demographics.familyInArmy,
+            r.demographics.familyInArmyDetail,
+            r.demographics.hasDependents,
+            r.demographics.dependentsDetail,
             ...r.factors,
             ...r.engagement,
-        ]);
-        const csv = [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
+        ].map(escapeCell));
+        const csv = [headers.map(escapeCell).join(","), ...rows.map((r) => r.join(","))].join("\n");
         const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -90,16 +102,23 @@ export default function RawDataTable() {
             </div>
 
             <div className="overflow-x-auto">
-                <table className="w-full text-xs border-collapse min-w-[700px]">
+                <table className="w-full text-xs border-collapse min-w-[1100px]">
                     <thead>
-                        <tr className="border-b border-[var(--color-border)]">
-                            <th className="p-2 text-left">#</th>
-                            <th className="p-2 text-left">เพศ</th>
-                            <th className="p-2 text-left">ชั้นยศ</th>
-                            <th className="p-2 text-left">สังกัด</th>
-                            <th className="p-2 text-left">เจเนอเรชั่น</th>
-                            <th className="p-2 text-center">ค่าเฉลี่ยปัจจัย</th>
-                            <th className="p-2 text-center">ค่าเฉลี่ยผูกพัน</th>
+                        <tr className="border-b border-[var(--color-border)] bg-[var(--color-surface)]">
+                            <th className="p-2 text-left whitespace-nowrap">#</th>
+                            <th className="p-2 text-left whitespace-nowrap">เพศ</th>
+                            <th className="p-2 text-left whitespace-nowrap">ชั้นยศ</th>
+                            <th className="p-2 text-left whitespace-nowrap">สังกัด</th>
+                            <th className="p-2 text-left whitespace-nowrap">เจเนอเรชั่น</th>
+                            <th className="p-2 text-left whitespace-nowrap">สถานภาพ</th>
+                            <th className="p-2 text-left whitespace-nowrap">การศึกษา</th>
+                            <th className="p-2 text-left whitespace-nowrap">อายุราชการ</th>
+                            <th className="p-2 text-left whitespace-nowrap">รายได้</th>
+                            <th className="p-2 text-left whitespace-nowrap">ที่อยู่อาศัย</th>
+                            <th className="p-2 text-left whitespace-nowrap">ครอบครัวใน ทบ.</th>
+                            <th className="p-2 text-left whitespace-nowrap">ภาระอุปการะ</th>
+                            <th className="p-2 text-center whitespace-nowrap">ค่าเฉลี่ยปัจจัย</th>
+                            <th className="p-2 text-center whitespace-nowrap">ค่าเฉลี่ยผูกพัน</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -111,10 +130,17 @@ export default function RawDataTable() {
                             return (
                                 <tr key={i} className="border-b border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/5">
                                     <td className="p-2">{page * PAGE_SIZE + i + 1}</td>
-                                    <td className="p-2">{r.demographics.gender}</td>
-                                    <td className="p-2">{r.demographics.rank}</td>
-                                    <td className="p-2 max-w-[150px] truncate">{r.unitClassification || r.demographics.unit}</td>
-                                    <td className="p-2">{r.demographics.ageGroup}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.gender}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.rank}</td>
+                                    <td className="p-2 max-w-[120px] truncate" title={r.unitClassification || r.demographics.unit}>{r.unitClassification || r.demographics.unit}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.ageGroup}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.maritalStatus}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.education}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.serviceYears}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.income}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.housing}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.familyInArmy}</td>
+                                    <td className="p-2 whitespace-nowrap">{r.demographics.hasDependents}</td>
                                     <td className="p-2 text-center font-medium">{fMean.toFixed(2)}</td>
                                     <td className="p-2 text-center font-medium">{eMean.toFixed(2)}</td>
                                 </tr>

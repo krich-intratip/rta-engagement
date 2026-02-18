@@ -200,6 +200,13 @@ function calcDemographicBreakdown(data: SurveyResponse[]): DemographicBreakdown 
         byRank: breakdownBy("rank"),
         byAgeGroup: breakdownBy("ageGroup"),
         byUnit: breakdownBy("unit"),
+        byMaritalStatus: breakdownBy("maritalStatus"),
+        byEducation: breakdownBy("education"),
+        byServiceYears: breakdownBy("serviceYears"),
+        byIncome: breakdownBy("income"),
+        byHousing: breakdownBy("housing"),
+        byFamilyInArmy: breakdownBy("familyInArmy"),
+        byHasDependents: breakdownBy("hasDependents"),
     };
 }
 
@@ -409,10 +416,18 @@ function generateInsights(
     }
 
     // ─── 7. DEEP ANALYSIS: Demographic Gaps ───
-    const demoFields: { key: keyof DemographicBreakdown; label: string }[] = [
-        { key: "byGender", label: "เพศ" },
-        { key: "byAgeGroup", label: "กลุ่มอายุ (เจเนอเรชั่น)" },
-        { key: "byRank", label: "ชั้นยศ" },
+    const demoFields: { key: keyof DemographicBreakdown; label: string; insight: string }[] = [
+        { key: "byGender", label: "เพศ", insight: "ความแตกต่างด้านเพศอาจสะท้อนถึงความต้องการที่แตกต่างกัน ควรออกแบบมาตรการที่ตอบสนองความต้องการเฉพาะกลุ่ม" },
+        { key: "byAgeGroup", label: "กลุ่มอายุ/เจเนอเรชั่น", insight: "แต่ละเจเนอเรชั่นมีความคาดหวังและแรงจูงใจที่แตกต่างกัน ควรออกแบบโปรแกรมที่เหมาะสมกับแต่ละช่วงวัย" },
+        { key: "byRank", label: "ชั้นยศ", insight: "ความแตกต่างตามชั้นยศอาจสะท้อนถึงความเหลื่อมล้ำในการเข้าถึงสวัสดิการหรือโอกาสพัฒนา ควรทบทวนความเท่าเทียม" },
+        { key: "byUnit", label: "ส่วนราชการ/สังกัด", insight: "ความแตกต่างระหว่างหน่วยอาจเกิดจากวัฒนธรรมองค์กรหรือทรัพยากรที่ต่างกัน ควรศึกษาแนวปฏิบัติที่ดีจากหน่วยที่มีคะแนนสูง" },
+        { key: "byMaritalStatus", label: "สถานภาพสมรส", insight: "กำลังพลที่มีครอบครัวอาจมีความต้องการด้านสวัสดิการและ Work-Life Balance ที่แตกต่างจากโสด ควรออกแบบสวัสดิการให้ครอบคลุม" },
+        { key: "byEducation", label: "ระดับการศึกษา", insight: "ความแตกต่างด้านการศึกษาอาจสะท้อนถึงความต้องการพัฒนาทักษะและความก้าวหน้าที่ต่างกัน ควรจัดโปรแกรมพัฒนาที่เหมาะสมกับระดับการศึกษา" },
+        { key: "byServiceYears", label: "อายุราชการ", insight: "กำลังพลที่มีอายุราชการต่างกันมีความต้องการที่แตกต่าง เช่น ผู้ใหม่ต้องการการปรับตัว ผู้มีประสบการณ์ต้องการความก้าวหน้า ควรออกแบบโปรแกรมตามช่วงอายุราชการ" },
+        { key: "byIncome", label: "รายได้ต่อเดือน", insight: "ความแตกต่างด้านรายได้อาจส่งผลต่อความพึงพอใจในสวัสดิการและค่าตอบแทน ควรทบทวนความเป็นธรรมของโครงสร้างรายได้" },
+        { key: "byHousing", label: "ประเภทที่อยู่อาศัย", insight: "กำลังพลที่พักในบ้านพักราชการและบ้านส่วนตัวอาจมีความต้องการด้านสวัสดิการที่อยู่อาศัยต่างกัน ควรพิจารณาปรับปรุงสวัสดิการบ้านพัก" },
+        { key: "byFamilyInArmy", label: "ครอบครัวรับราชการใน ทบ.", insight: "กำลังพลที่มีครอบครัวรับราชการใน ทบ. อาจมีความผูกพันและความเข้าใจองค์กรที่แตกต่างกัน ควรใช้ประโยชน์จากเครือข่ายครอบครัวในการสร้างความผูกพัน" },
+        { key: "byHasDependents", label: "ภาระอุปการะเลี้ยงดู", insight: "กำลังพลที่มีภาระอุปการะอาจมีความเครียดทางการเงินและต้องการสวัสดิการเพิ่มเติม ควรพิจารณาโครงการช่วยเหลือผู้มีภาระอุปการะ" },
     ];
 
     for (const field of demoFields) {
@@ -438,7 +453,7 @@ function generateInsights(
                 if (eGap > 0.3) detail += `\n  ความผูกพัน: ${v.engagementMean.toFixed(2)} (ต่ำกว่าค่าเฉลี่ย ${eGap.toFixed(2)})`;
                 return detail;
             }).join("\n\n");
-            desc += `\n\nข้อเสนอแนะ: ควรจัดกิจกรรมหรือมาตรการเฉพาะกลุ่มเพื่อยกระดับความพึงพอใจและความผูกพันของกลุ่มที่มีคะแนนต่ำ`;
+            desc += `\n\nการวิเคราะห์: ${field.insight}\n\nข้อเสนอแนะ: ควรจัดกิจกรรมหรือมาตรการเฉพาะกลุ่มเพื่อยกระดับความพึงพอใจและความผูกพันของกลุ่มที่มีคะแนนต่ำ`;
 
             insights.push({
                 type: "analysis",
@@ -532,7 +547,7 @@ export function analyzeData(data: SurveyResponse[]): AnalysisResult {
             overallFactorScore: 0,
             overallEngagementScore: 0,
             correlations: [],
-            demographicBreakdown: { byGender: {}, byRank: {}, byAgeGroup: {}, byUnit: {} },
+            demographicBreakdown: { byGender: {}, byRank: {}, byAgeGroup: {}, byUnit: {}, byMaritalStatus: {}, byEducation: {}, byServiceYears: {}, byIncome: {}, byHousing: {}, byFamilyInArmy: {}, byHasDependents: {} },
             insights: [],
             itemStats: [],
         };
