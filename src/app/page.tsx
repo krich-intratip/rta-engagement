@@ -7,12 +7,18 @@ import HeroSection from "@/components/HeroSection";
 import DataSourceSwitcher from "@/components/DataSourceSwitcher";
 import InsightsPanel from "@/components/InsightsPanel";
 import RawDataTable from "@/components/RawDataTable";
+import FilterPanel from "@/components/FilterPanel";
+import CrossTabulation from "@/components/CrossTabulation";
+import StatisticalSignificance from "@/components/StatisticalSignificance";
+import TextAnalysis from "@/components/TextAnalysis";
+import ExecutiveSummary from "@/components/ExecutiveSummary";
 import FactorBarChart from "@/components/charts/FactorBarChart";
 import EngagementRadarChart from "@/components/charts/EngagementRadarChart";
 import CorrelationHeatmap from "@/components/charts/CorrelationHeatmap";
 import DemographicPieChart from "@/components/charts/DemographicPieChart";
 import CompareGroupChart from "@/components/charts/CompareGroupChart";
 import DistributionChart from "@/components/charts/DistributionChart";
+import FactorDemographicHeatmap from "@/components/charts/FactorDemographicHeatmap";
 import AboutPage from "@/components/AboutPage";
 import ExportButton from "@/components/ExportButton";
 import { useAppState } from "@/lib/store";
@@ -24,6 +30,8 @@ const TAB_NAMES: Record<string, string> = {
     engagement: "ความผูกพัน",
     compare: "เปรียบเทียบ",
     raw: "ข้อมูลดิบ",
+    text: "วิเคราะห์ข้อความ",
+    executive: "สรุปผู้บริหาร",
     about: "เกี่ยวกับ",
 };
 
@@ -45,18 +53,14 @@ function TabContent() {
     return (
         <AnimatePresence mode="wait">
             {state.activeTab === "overview" && (
-                <motion.div
-                    key="overview"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="overview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <TabHeader tabKey="overview" />
                     <div id="tab-content-overview" className="space-y-5">
                         <HeroSection />
                         <DataSourceSwitcher />
                         {hasData && (
                             <>
+                                <FilterPanel />
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                                     <FactorBarChart />
                                     <EngagementRadarChart />
@@ -70,18 +74,15 @@ function TabContent() {
             )}
 
             {state.activeTab === "factors" && (
-                <motion.div
-                    key="factors"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="factors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <TabHeader tabKey="factors" />
                     <div id="tab-content-factors" className="space-y-5">
                         {hasData ? (
                             <>
+                                <FilterPanel />
                                 <FactorBarChart />
                                 <DistributionChart />
+                                <FactorDemographicHeatmap />
                             </>
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูการวิเคราะห์ปัจจัย" />
@@ -91,18 +92,15 @@ function TabContent() {
             )}
 
             {state.activeTab === "engagement" && (
-                <motion.div
-                    key="engagement"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="engagement" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <TabHeader tabKey="engagement" />
                     <div id="tab-content-engagement" className="space-y-5">
                         {hasData ? (
                             <>
+                                <FilterPanel />
                                 <EngagementRadarChart />
                                 <CorrelationHeatmap />
+                                <StatisticalSignificance />
                                 <InsightsPanel />
                             </>
                         ) : (
@@ -113,18 +111,16 @@ function TabContent() {
             )}
 
             {state.activeTab === "compare" && (
-                <motion.div
-                    key="compare"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="compare" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <TabHeader tabKey="compare" />
                     <div id="tab-content-compare" className="space-y-5">
                         {hasData ? (
                             <>
+                                <FilterPanel />
                                 <CompareGroupChart />
                                 <DemographicPieChart />
+                                <CrossTabulation />
+                                <StatisticalSignificance />
                             </>
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อเปรียบเทียบ" />
@@ -134,16 +130,14 @@ function TabContent() {
             )}
 
             {state.activeTab === "raw" && (
-                <motion.div
-                    key="raw"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="raw" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <TabHeader tabKey="raw" />
                     <div id="tab-content-raw" className="space-y-5">
                         {hasData ? (
-                            <RawDataTable />
+                            <>
+                                <FilterPanel />
+                                <RawDataTable />
+                            </>
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูข้อมูลดิบ" />
                         )}
@@ -151,13 +145,40 @@ function TabContent() {
                 </motion.div>
             )}
 
+            {state.activeTab === "text" && (
+                <motion.div key="text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="text" />
+                    <div id="tab-content-text" className="space-y-5">
+                        {hasData ? (
+                            <>
+                                <FilterPanel />
+                                <TextAnalysis />
+                            </>
+                        ) : (
+                            <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อวิเคราะห์ข้อความ" />
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "executive" && (
+                <motion.div key="executive" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="executive" />
+                    <div id="tab-content-executive" className="space-y-5">
+                        {hasData ? (
+                            <>
+                                <FilterPanel />
+                                <ExecutiveSummary />
+                            </>
+                        ) : (
+                            <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูสรุปผู้บริหาร" />
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
             {state.activeTab === "about" && (
-                <motion.div
-                    key="about"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
+                <motion.div key="about" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                     <AboutPage />
                 </motion.div>
             )}

@@ -21,6 +21,7 @@ import {
     Maximize2,
     Moon,
     Sun,
+    Filter,
 } from "lucide-react";
 
 type SubTab = "guide" | "features" | "about";
@@ -77,6 +78,21 @@ function GuideContent() {
             icon: Moon,
             title: "9. สลับ Light/Dark Mode",
             desc: "กดปุ่ม Moon/Sun ที่ Sidebar ด้านซ้ายเพื่อสลับโหมดสีตามความต้องการ ระบบจะจำค่าที่เลือกไว้",
+        },
+        {
+            icon: Filter,
+            title: "10. กรองข้อมูล (Filter)",
+            desc: "กดปุ่ม ‘กรองข้อมูล’ เพื่อเลือกกลุ่มประชากรศาสตร์ที่ต้องการวิเคราะห์ กราฟและตารางทั้งหมดจะอัปเดตตามกลุ่มที่เลือกทันที",
+        },
+        {
+            icon: Brain,
+            title: "11. วิเคราะห์ข้อความปลายเปิด (Text Analysis)",
+            desc: "ดู Word Cloud และคำสำคัญจากคำตอบปลายเปิดทั้ง 7 หัวข้อ เพื่อเข้าใจความต้องการและความคิดเห็นของกำลังพล",
+        },
+        {
+            icon: BookOpen,
+            title: "12. สรุปผู้บริหาร (Executive Summary)",
+            desc: "ดูรายงานสรุปผลแบบผู้บริหาร พร้อม KPI สำคัญ จุดแข็ง/จุดอ่อน และข้อเสนอแนะ Export เป็น HTML หรือพิมพ์ได้ทันที",
         },
     ];
 
@@ -185,8 +201,50 @@ function FeaturesContent() {
         {
             icon: Shield,
             title: "ประมวลผลฝั่ง Client",
-            desc: "ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลไปยังเซิร์ฟเวอร์ภายนอก",
+            desc: "ข้อมูลทั้งหมดปรมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลไปยังเซิร์ฟเวอร์ภายนอก",
             gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Filter,
+            title: "กรองข้อมูลแบบ Dynamic",
+            desc: "เลือกกลุ่มประชากรศาสตร์ที่ต้องการ กราฟและตารางทุกหน้าอัปเดตทันที รองรับการกรองพร้อมกันหลายเงื่อนไข",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: Table2,
+            title: "ตารางไขว้ (Cross-Tabulation)",
+            desc: "วิเคราะห์ความสัมพันธ์ระหว่าง 2 ตัวแปร demographic พร้อมกัน เช่น ยศ × เจเนอเรชั่น แสดงค่าเฉลี่ยและจำนวนคนในแต่ละเซลล์",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: BarChart3,
+            title: "Heatmap ปัจจัยรายข้อตามกลุ่ม",
+            desc: "แสดงค่าเฉลี่ย 29 ข้อปัจจัยแยกตามกลุ่มประชากรศาสตร์ ใช้สีเพื่อระบุปัจจัยที่ต้องปรับปรุงเฉพาะกลุ่มได้ทันที",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: Brain,
+            title: "ทดสอบนัยสำคัญทางสถิติ",
+            desc: "t-test (2 กลุ่ม) และ One-way ANOVA (≥ 3 กลุ่ม) แสดงค่า p-value และระดับนัยสำคัญ (* ** ***) ทุกมิติประชากร",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: BookOpen,
+            title: "วิเคราะห์ข้อความปลายเปิด",
+            desc: "Word Cloud และ Top Keywords จากคำตอบปลายเปิดทั้ง 7 หัวข้อ เข้าใจความต้องการของกำลังพลได้ทันที",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: Download,
+            title: "สรุปผู้บริหาร (Executive Summary)",
+            desc: "รายงานสรุปผลแบบผู้บริหาร พร้อม KPI จุดแข็ง/จุดอ่อน และข้อเสนอแนะ Export HTML หรือพิมพ์ได้ทันที",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: Info,
+            title: "Saved State",
+            desc: "ระบบจำแหล่งข้อมูล แท็บที่เลือก และ filter ที่ตั้งไว้ใน localStorage เปิดเบราว์เซอร์ครั้งต่อไปไม่ต้องตั้งค่าใหม่",
+            gradient: "bg-gradient-lavender",
         },
     ];
 
@@ -234,7 +292,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 1.2.0
+                    Version 2.0.0
                 </div>
             </motion.div>
 
@@ -278,7 +336,7 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">1.2.0</p>
+                        <p className="font-bold">2.0.0</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
@@ -302,7 +360,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p>© 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement & Happiness Analysis System</p>
+                <p className="mt-1">RTA Engagement & Happiness Analysis System v2.0.0</p>
             </motion.div>
         </div>
     );

@@ -13,6 +13,8 @@ import {
     ChevronRight,
     Sun,
     Moon,
+    FileText,
+    ClipboardList,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
@@ -24,6 +26,8 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
     { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
     { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
+    { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
+    { icon: ClipboardList, label: "สรุปผู้บริหาร", tab: "executive" },
     { icon: Info, label: "เกี่ยวกับ", tab: "about" },
 ];
 
