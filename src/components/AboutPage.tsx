@@ -56,12 +56,12 @@ function GuideContent() {
         {
             icon: GitCompare,
             title: "5. เปรียบเทียบ (Compare)",
-            desc: "เปรียบเทียบคะแนนระหว่างกลุ่มประชากรศาสตร์ต่างๆ เช่น เพศ ยศ กลุ่มอายุ และหน่วยงาน พร้อมกราฟวงกลมแสดงสัดส่วน",
+            desc: "เปรียบเทียบคะแนนระหว่างกลุ่มประชากรศาสตร์ครบทั้ง 11 มิติ ได้แก่ เพศ ยศ เจเนอเรชั่น สังกัด สถานภาพสมรส การศึกษา อายุราชการ รายได้ ที่อยู่อาศัย ครอบครัวใน ทบ. และภาระอุปการะ พร้อมกราฟวงกลมแสดงสัดส่วน",
         },
         {
             icon: Table2,
             title: "6. ข้อมูลดิบ (Raw Data)",
-            desc: "ดูข้อมูลดิบทั้งหมดในรูปแบบตาราง สามารถค้นหา กรอง และเรียงลำดับข้อมูลได้",
+            desc: "ดูข้อมูลดิบทั้งหมดในรูปแบบตาราง แสดงข้อมูลประชากรศาสตร์ครบทุก 11 หัวข้อ สามารถค้นหาข้ามทุก field และ Export CSV ที่มีข้อมูลครบถ้วนได้",
         },
         {
             icon: Download,
@@ -142,20 +142,20 @@ function FeaturesContent() {
         },
         {
             icon: GitCompare,
-            title: "เปรียบเทียบกลุ่มประชากร",
-            desc: "เปรียบเทียบคะแนนระหว่างเพศ ยศ กลุ่มอายุ และหน่วยงาน",
+            title: "เปรียบเทียบกลุ่มประชากร 11 มิติ",
+            desc: "เปรียบเทียบคะแนนปัจจัยและความผูกพันครบทุกมิติ: เพศ ยศ เจเนอเรชั่น สังกัด สถานภาพสมรส การศึกษา อายุราชการ รายได้ ที่อยู่อาศัย ครอบครัวใน ทบ. และภาระอุปการะ",
             gradient: "bg-gradient-lavender",
         },
         {
             icon: PieChart,
-            title: "วิเคราะห์ข้อมูลประชากรศาสตร์",
-            desc: "แสดงสัดส่วนและค่าเฉลี่ยตามกลุ่มประชากรศาสตร์ในรูปแบบกราฟวงกลม",
+            title: "วิเคราะห์ข้อมูลประชากรศาสตร์ครบถ้วน",
+            desc: "แสดงสัดส่วนและค่าเฉลี่ยตามกลุ่มประชากรศาสตร์ครบทั้ง 11 หัวข้อ (ข้อ 1.1–1.11) ในรูปแบบกราฟวงกลม",
             gradient: "bg-gradient-primary",
         },
         {
             icon: Table2,
-            title: "ตารางข้อมูลดิบ",
-            desc: "ดูข้อมูลดิบทั้งหมด พร้อมระบบค้นหาและกรองข้อมูล",
+            title: "ตารางข้อมูลดิบครบถ้วน",
+            desc: "ดูและค้นหาข้อมูลดิบทั้งหมด แสดงข้อมูลประชากรศาสตร์ครบ 11 คอลัมน์ Export CSV ที่มีข้อมูลครบทุก field",
             gradient: "bg-gradient-secondary",
         },
         {
@@ -234,7 +234,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 1.1.0
+                    Version 1.2.0
                 </div>
             </motion.div>
 
@@ -278,11 +278,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">1.1.0</p>
+                        <p className="font-bold">1.2.0</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">16 กุมภาพันธ์ 2569</p>
+                        <p className="font-bold">18 กุมภาพันธ์ 2569</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
