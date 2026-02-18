@@ -25,9 +25,9 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: BarChart3, label: "ปัจจัย", tab: "factors" },
     { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
     { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
-    { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
     { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
     { icon: ClipboardList, label: "สรุปผู้บริหาร", tab: "executive" },
+    { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
     { icon: Info, label: "เกี่ยวกับ", tab: "about" },
 ];
 
