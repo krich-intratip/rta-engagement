@@ -15,20 +15,54 @@ import {
     Moon,
     FileText,
     ClipboardList,
+    Users,
+    GitMerge,
+    ClipboardCheck,
+    AlertTriangle,
+    Settings2,
+    TrendingUp,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
 import { useState } from "react";
 
-const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
-    { icon: LayoutDashboard, label: "ภาพรวม", tab: "overview" },
-    { icon: BarChart3, label: "ปัจจัย", tab: "factors" },
-    { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
-    { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
-    { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
-    { icon: ClipboardList, label: "สรุปผู้บริหาร", tab: "executive" },
-    { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
-    { icon: Info, label: "เกี่ยวกับ", tab: "about" },
+type NavSection = { section: string; items: { icon: React.ElementType; label: string; tab: ActiveTab; badge?: string }[] };
+
+const navSections: NavSection[] = [
+    {
+        section: "วิเคราะห์",
+        items: [
+            { icon: LayoutDashboard, label: "ภาพรวม", tab: "overview" },
+            { icon: BarChart3, label: "ปัจจัย", tab: "factors" },
+            { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
+            { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
+            { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
+        ],
+    },
+    {
+        section: "เชิงลึก",
+        items: [
+            { icon: Users, label: "Cluster Analysis", tab: "cluster" },
+            { icon: GitMerge, label: "Correlation Matrix", tab: "correlation" },
+            { icon: AlertTriangle, label: "Anomaly Detection", tab: "anomaly" },
+            { icon: TrendingUp, label: "Benchmark", tab: "benchmark", badge: "Soon" },
+        ],
+    },
+    {
+        section: "จัดการ",
+        items: [
+            { icon: ClipboardList, label: "สรุปผู้บริหาร", tab: "executive" },
+            { icon: ClipboardCheck, label: "Action Plan", tab: "actionplan" },
+            { icon: Settings2, label: "Survey Builder", tab: "surveybuilder" },
+            { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
+        ],
+    },
+    {
+        section: "",
+        items: [
+            { icon: Info, label: "เกี่ยวกับ", tab: "about" },
+        ],
+    },
 ];
 
 export default function Sidebar() {
@@ -61,25 +95,37 @@ export default function Sidebar() {
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 p-3 space-y-1">
-                {navItems.map((item) => {
-                    const isActive = state.activeTab === item.tab;
-                    const Icon = item.icon;
-                    return (
-                        <button
-                            key={item.tab}
-                            onClick={() => dispatch({ type: "SET_TAB", payload: item.tab })}
-                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
-                ${isActive
-                                    ? "bg-[var(--color-primary)] text-white shadow-md"
-                                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 hover:text-[var(--color-primary-dark)]"
-                                }`}
-                        >
-                            <Icon className="w-5 h-5 flex-shrink-0" />
-                            {!collapsed && <span>{item.label}</span>}
-                        </button>
-                    );
-                })}
+            <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+                {navSections.map((section) => (
+                    <div key={section.section}>
+                        {section.section && !collapsed && (
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--color-text-light)] px-3 pt-3 pb-1">{section.section}</p>
+                        )}
+                        {section.items.map((item) => {
+                            const isActive = state.activeTab === item.tab;
+                            const Icon = item.icon;
+                            return (
+                                <button
+                                    key={item.tab}
+                                    onClick={() => dispatch({ type: "SET_TAB", payload: item.tab })}
+                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                        ${isActive
+                                            ? "bg-[var(--color-primary)] text-white shadow-md"
+                                            : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 hover:text-[var(--color-primary-dark)]"
+                                        }`}
+                                >
+                                    <Icon className="w-5 h-5 flex-shrink-0" />
+                                    {!collapsed && (
+                                        <span className="flex-1 text-left">{item.label}</span>
+                                    )}
+                                    {!collapsed && item.badge && (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400">{item.badge}</span>
+                                    )}
+                                </button>
+                            );
+                        })}
+                    </div>
+                ))}
             </nav>
 
             {/* Theme toggle */}

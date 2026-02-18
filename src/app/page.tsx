@@ -21,6 +21,12 @@ import DistributionChart from "@/components/charts/DistributionChart";
 import FactorDemographicHeatmap from "@/components/charts/FactorDemographicHeatmap";
 import AboutPage from "@/components/AboutPage";
 import ExportButton from "@/components/ExportButton";
+import ClusterAnalysis from "@/components/ClusterAnalysis";
+import CorrelationMatrix from "@/components/CorrelationMatrix";
+import ActionPlanTracker from "@/components/ActionPlanTracker";
+import AnomalyDetection from "@/components/AnomalyDetection";
+import SurveyBuilder from "@/components/SurveyBuilder";
+import BenchmarkView from "@/components/BenchmarkView";
 import { useAppState } from "@/lib/store";
 import Image from "next/image";
 
@@ -32,6 +38,12 @@ const TAB_NAMES: Record<string, string> = {
     raw: "ข้อมูลดิบ",
     text: "วิเคราะห์ข้อความ",
     executive: "สรุปผู้บริหาร",
+    cluster: "Cluster Analysis",
+    correlation: "Correlation Matrix",
+    actionplan: "Action Plan Tracker",
+    anomaly: "Anomaly Detection",
+    surveybuilder: "Survey Builder",
+    benchmark: "Benchmark",
     about: "เกี่ยวกับ",
 };
 
@@ -173,6 +185,81 @@ function TabContent() {
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูสรุปผู้บริหาร" />
                         )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "cluster" && (
+                <motion.div key="cluster" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="cluster" />
+                    <div id="tab-content-cluster" className="space-y-5">
+                        {hasData ? (
+                            <>
+                                <FilterPanel />
+                                <ClusterAnalysis />
+                            </>
+                        ) : (
+                            <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อวิเคราะห์กลุ่ม" />
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "correlation" && (
+                <motion.div key="correlation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="correlation" />
+                    <div id="tab-content-correlation" className="space-y-5">
+                        {hasData ? (
+                            <>
+                                <FilterPanel />
+                                <CorrelationMatrix />
+                            </>
+                        ) : (
+                            <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดู Correlation Matrix" />
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "anomaly" && (
+                <motion.div key="anomaly" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="anomaly" />
+                    <div id="tab-content-anomaly" className="space-y-5">
+                        {hasData ? (
+                            <>
+                                <FilterPanel />
+                                <AnomalyDetection />
+                            </>
+                        ) : (
+                            <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อตรวจจับความผิดปกติ" />
+                        )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "benchmark" && (
+                <motion.div key="benchmark" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="benchmark" />
+                    <div id="tab-content-benchmark" className="space-y-5">
+                        <BenchmarkView />
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "actionplan" && (
+                <motion.div key="actionplan" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="actionplan" />
+                    <div id="tab-content-actionplan" className="space-y-5">
+                        <ActionPlanTracker />
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "surveybuilder" && (
+                <motion.div key="surveybuilder" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="surveybuilder" />
+                    <div id="tab-content-surveybuilder" className="space-y-5">
+                        <SurveyBuilder />
                     </div>
                 </motion.div>
             )}

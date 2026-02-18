@@ -4,7 +4,7 @@ import React, { createContext, useContext, useReducer, ReactNode, useEffect } fr
 import { SurveyResponse, AnalysisResult } from "@/types/survey";
 
 export type DataSource = "file" | "google-sheet";
-export type ActiveTab = "overview" | "factors" | "engagement" | "compare" | "raw" | "text" | "executive" | "about";
+export type ActiveTab = "overview" | "factors" | "engagement" | "compare" | "raw" | "text" | "executive" | "cluster" | "correlation" | "actionplan" | "anomaly" | "surveybuilder" | "benchmark" | "about";
 
 export interface DemographicFilters {
     gender: string[];

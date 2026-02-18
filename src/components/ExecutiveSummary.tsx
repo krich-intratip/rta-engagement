@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useAppState } from "@/lib/store";
 import { interpretMean, FACTOR_LABELS, ENGAGEMENT_LABELS, SurveyResponse } from "@/types/survey";
-import { Printer, Download, CheckCircle2, AlertTriangle, Lightbulb } from "lucide-react";
+import { Printer, Download, CheckCircle2, AlertTriangle, Lightbulb, FileText } from "lucide-react";
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 const FACTOR_GROUPS: Record<string, number[]> = {
     "ลักษณะงาน": [0, 1, 2, 3], "สภาพแวดล้อม": [4, 5, 6], "คุณภาพชีวิต": [7, 8, 9],
@@ -318,7 +319,39 @@ export default function ExecutiveSummary() {
     const improvements = useMemo(() => generateImprovements(factorMeans, engMeans), [factorMeans, engMeans]);
     const recommendations = useMemo(() => generateRecommendations(factorMeans, engMeans), [factorMeans, engMeans]);
 
+    const [exporting, setExporting] = useState(false);
+
     const handlePrint = () => window.print();
+
+    const handleExportPDF = async () => {
+        if (!printRef.current || exporting) return;
+        setExporting(true);
+        try {
+            const html2canvas = (await import("html2canvas-pro")).default;
+            const { jsPDF } = await import("jspdf");
+            const canvas = await html2canvas(printRef.current, { scale: 1.5, useCORS: true, backgroundColor: "#ffffff" });
+            const imgData = canvas.toDataURL("image/png");
+            const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = pdf.internal.pageSize.getHeight();
+            const imgW = pageW - 20;
+            const imgH = (canvas.height * imgW) / canvas.width;
+            let y = 10;
+            let remaining = imgH;
+            while (remaining > 0) {
+                const sliceH = Math.min(remaining, pageH - 20);
+                pdf.addImage(imgData, "PNG", 10, y, imgW, imgH, undefined, "FAST", 0);
+                remaining -= sliceH;
+                if (remaining > 0) { pdf.addPage(); y = 10 - (imgH - remaining); }
+                else break;
+            }
+            pdf.save("executive-summary-rta.pdf");
+        } catch (e) {
+            console.error("PDF export failed", e);
+        } finally {
+            setExporting(false);
+        }
+    };
 
     const handleExportHTML = () => {
         if (!printRef.current) return;
@@ -355,12 +388,15 @@ ${printRef.current.innerHTML}
                         สรุปผลสำหรับผู้บริหาร{isFiltered ? ` (กรองแล้ว: ${n.toLocaleString()} / ${totalN.toLocaleString()} คน)` : ` (${n.toLocaleString()} คน)`}
                     </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                     <button onClick={handlePrint} className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/20 transition">
                         <Printer className="w-4 h-4" /> พิมพ์
                     </button>
-                    <button onClick={handleExportHTML} className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl bg-gradient-primary text-white font-medium hover:shadow-md transition">
-                        <Download className="w-4 h-4" /> Export HTML
+                    <button onClick={handleExportHTML} className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-primary-light)]/20 transition">
+                        <FileText className="w-4 h-4" /> HTML
+                    </button>
+                    <button onClick={handleExportPDF} disabled={exporting} className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl bg-gradient-primary text-white font-medium hover:shadow-md transition disabled:opacity-60">
+                        <Download className="w-4 h-4" /> {exporting ? "กำลัง Export…" : "Export PDF"}
                     </button>
                 </div>
             </div>
@@ -389,6 +425,58 @@ ${printRef.current.innerHTML}
                         </div>
                     ))}
                 </div>
+
+                {/* Radar Chart — Factor Group Profile */}
+                {(() => {
+                    const groupLabels = ["ลักษณะงาน", "สภาพแวดล้อม", "คุณภาพชีวิต", "เพื่อนร่วมงาน", "ผู้บังคับบัญชา", "นโยบาย", "ค่าตอบแทน", "ความก้าวหน้า"];
+                    const groupIndices = [[0,1,2,3],[4,5,6],[7,8,9],[10,11,12],[13,14,15,16,17],[18,19,20,21],[22,23,24],[25,26,27,28]];
+                    const radarData = groupLabels.map((label, gi) => {
+                        const vals = groupIndices[gi].map((i) => factorMeans[i]).filter((v) => v > 0);
+                        const avg = vals.length ? Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*100)/100 : 0;
+                        const eVals = engMeans.filter((v) => v > 0);
+                        const eAvg = eVals.length ? Math.round((eVals.reduce((a,b)=>a+b,0)/eVals.length)*100)/100 : 0;
+                        return { label, ปัจจัย: avg, ความผูกพัน: gi === 0 ? eAvg : undefined };
+                    });
+                    const engRadar = [{ label: "ทัศนคติ", ค่า: engMeans.slice(0,5).filter(v=>v>0).reduce((a,b)=>a+b,0)/(engMeans.slice(0,5).filter(v=>v>0).length||1) },
+                        { label: "ทุ่มเท", ค่า: engMeans.slice(5,8).filter(v=>v>0).reduce((a,b)=>a+b,0)/(engMeans.slice(5,8).filter(v=>v>0).length||1) },
+                        { label: "เชื่อมั่น", ค่า: engMeans.slice(8,11).filter(v=>v>0).reduce((a,b)=>a+b,0)/(engMeans.slice(8,11).filter(v=>v>0).length||1) }];
+                    const factorRadar = groupLabels.map((label, gi) => {
+                        const vals = groupIndices[gi].map((i) => factorMeans[i]).filter((v) => v > 0);
+                        return { label, ค่า: vals.length ? Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*100)/100 : 0 };
+                    });
+                    return (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="glass-card p-4 print:border print:border-gray-200">
+                                <h3 className="text-sm font-bold mb-2 text-[var(--color-text)]">โปรไฟล์ปัจจัยรายกลุ่ม</h3>
+                                <div className="h-56">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RadarChart data={factorRadar}>
+                                            <PolarGrid stroke="var(--color-border)" />
+                                            <PolarAngleAxis dataKey="label" tick={{ fontSize: 9, fill: "var(--color-text-secondary)" }} />
+                                            <PolarRadiusAxis domain={[0,5]} tick={{ fontSize: 8 }} tickCount={4} />
+                                            <Tooltip contentStyle={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: 8, fontSize: 11 }} formatter={(v:unknown)=>[(v as number).toFixed(2),"คะแนน"]} />
+                                            <Radar dataKey="ค่า" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.25} strokeWidth={2} />
+                                        </RadarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                            <div className="glass-card p-4 print:border print:border-gray-200">
+                                <h3 className="text-sm font-bold mb-2 text-[var(--color-text)]">โปรไฟล์ความผูกพันรายกลุ่ม</h3>
+                                <div className="h-56">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RadarChart data={engRadar}>
+                                            <PolarGrid stroke="var(--color-border)" />
+                                            <PolarAngleAxis dataKey="label" tick={{ fontSize: 11, fill: "var(--color-text-secondary)" }} />
+                                            <PolarRadiusAxis domain={[0,5]} tick={{ fontSize: 8 }} tickCount={4} />
+                                            <Tooltip contentStyle={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", borderRadius: 8, fontSize: 11 }} formatter={(v:unknown)=>[(v as number).toFixed(2),"คะแนน"]} />
+                                            <Radar dataKey="ค่า" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.25} strokeWidth={2} />
+                                        </RadarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
 
                 {/* Factor & Engagement scores */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -488,7 +576,7 @@ ${printRef.current.innerHTML}
 
                 {/* Footer */}
                 <div className="text-center text-xs text-[var(--color-text-light)] py-2">
-                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.0.0</p>
+                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.0</p>
                     <p className="mt-0.5">© 2026 พล.ท.ดร.กริช อินทราทิพย์ — ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลออกภายนอก</p>
                 </div>
             </div>

@@ -22,6 +22,13 @@ import {
     Moon,
     Sun,
     Filter,
+    Users,
+    GitMerge,
+    AlertTriangle,
+    TrendingUp,
+    ClipboardCheck,
+    Settings2,
+    FileText,
 } from "lucide-react";
 
 type SubTab = "guide" | "features" | "about";
@@ -246,6 +253,48 @@ function FeaturesContent() {
             desc: "ระบบจำแหล่งข้อมูล แท็บที่เลือก และ filter ที่ตั้งไว้ใน localStorage เปิดเบราว์เซอร์ครั้งต่อไปไม่ต้องตั้งค่าใหม่",
             gradient: "bg-gradient-lavender",
         },
+        {
+            icon: Users,
+            title: "Cluster Analysis (v2.1)",
+            desc: "K-Means clustering จัดกำลังพลเป็น 3 กลุ่ม (เสี่ยง/กลาง/แข็งแกร่ง) พร้อม Radar Chart เปรียบโปรไฟล์ระหว่างกลุ่ม",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: GitMerge,
+            title: "Correlation Matrix (v2.1)",
+            desc: "Pearson r ความสัมพันธ์ระหว่างปัจจัย ความผูกพัน และภายในกลุ่ม พร้อม Heatmap แบบ Interactive และสรุปคู่ตัวแปรที่สัมพันธ์สูงสุด",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: AlertTriangle,
+            title: "Anomaly Detection (v2.1)",
+            desc: "Z-score ตรวจจับหน่วยงานที่คะแนนต่ำกว่าค่าเฉลี่ยองค์กรเกิน 1 SD แสดงผลเป็น Bar Chart พร้อมระดับความเสี่ยง",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: FileText,
+            title: "Radar Chart ใน Executive Summary (v2.1)",
+            desc: "โปรไฟล์ปัจจัยและความผูกพันรายกลุ่มในรูป Radar Chart พร้อม Export PDF จริงด้วย jsPDF + html2canvas",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: ClipboardCheck,
+            title: "Action Plan Tracker (v2.1)",
+            desc: "บันทึกแผนปฏิบัติการ กำหนดผู้รับผิดชอบ due date ความเร่งด่วน ติดตามความคืบหน้า บันทึกใน localStorage",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Settings2,
+            title: "Survey Builder (v2.1)",
+            desc: "ปรับแต่งชื่อข้อคำถาม เปิด/ปิดใช้งานข้อคำถาม เพิ่ม/ลบข้อ และเรียงลำดับได้ภายในระบบ บันทึกใน localStorage",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: TrendingUp,
+            title: "Benchmark (v2.1 — Coming Soon)",
+            desc: "เปรียบเทียบคะแนนรายปี Trend Line รายปัจจัย YoY Change ออกแบบ UI แล้ว จะเปิดใช้งานเต็มรูปแบบใน v2.2.0",
+            gradient: "bg-gradient-accent",
+        },
     ];
 
     return (
@@ -292,7 +341,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.0.0
+                    Version 2.1.0
                 </div>
             </motion.div>
 
@@ -336,7 +385,7 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.0.0</p>
+                        <p className="font-bold">2.1.0</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
@@ -360,7 +409,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p>© 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement & Happiness Analysis System v2.0.0</p>
+                <p className="mt-1">RTA Engagement & Happiness Analysis System v2.1.0</p>
             </motion.div>
         </div>
     );
