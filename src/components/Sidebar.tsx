@@ -52,9 +52,9 @@ const navSections: NavSection[] = [
         section: "จัดการ",
         items: [
             { icon: ClipboardList, label: "สรุปผู้บริหาร", tab: "executive" },
+            { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
             { icon: ClipboardCheck, label: "Action Plan", tab: "actionplan" },
             { icon: Settings2, label: "Survey Builder", tab: "surveybuilder" },
-            { icon: Table2, label: "ข้อมูลดิบ", tab: "raw" },
         ],
     },
     {
