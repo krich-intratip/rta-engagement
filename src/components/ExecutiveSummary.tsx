@@ -8,10 +8,14 @@ import { Printer, Download, CheckCircle2, AlertTriangle, Lightbulb, FileText } f
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 const FACTOR_GROUPS: Record<string, number[]> = {
-    "ลักษณะงาน": [0, 1, 2, 3], "สภาพแวดล้อม": [4, 5, 6], "คุณภาพชีวิต": [7, 8, 9],
-    "เพื่อนร่วมงาน": [10, 11, 12], "ผู้บังคับบัญชา": [13, 14, 15, 16, 17],
-    "นโยบายองค์กร": [18, 19, 20, 21], "ค่าตอบแทน": [22, 23, 24],
-    "ภาระงานและการประเมิน": [25, 26], "ความก้าวหน้า": [27, 28],
+    "ลักษณะงาน": [0, 1, 2, 3],
+    "สภาพแวดล้อมในการทำงาน": [4, 5],
+    "คุณภาพชีวิตในการทำงาน": [6, 7, 8, 9],
+    "ความสัมพันธ์กับเพื่อนร่วมงาน": [10, 11, 12],
+    "หัวหน้างาน": [13, 14, 15, 16, 17],
+    "นโยบายและการบริหาร": [18, 19, 20, 21],
+    "ผลประโยชน์และค่าตอบแทน": [22, 23, 24],
+    "การประเมินผลและความก้าวหน้า": [25, 26, 27, 28],
 };
 
 const FACTOR_ACTIONS: Record<number, string> = {
@@ -428,8 +432,8 @@ ${printRef.current.innerHTML}
 
                 {/* Radar Chart — Factor Group Profile */}
                 {(() => {
-                    const groupLabels = ["ลักษณะงาน", "สภาพแวดล้อม", "คุณภาพชีวิต", "เพื่อนร่วมงาน", "ผู้บังคับบัญชา", "นโยบาย", "ค่าตอบแทน", "ความก้าวหน้า"];
-                    const groupIndices = [[0,1,2,3],[4,5,6],[7,8,9],[10,11,12],[13,14,15,16,17],[18,19,20,21],[22,23,24],[25,26,27,28]];
+                    const groupLabels = ["ลักษณะงาน", "สภาพแวดล้อม", "คุณภาพชีวิต", "เพื่อนร่วมงาน", "ผู้บังคับบัญชา", "นโยบาย", "ค่าตอบแทน", "ประเมิน/ก้าวหน้า"];
+                    const groupIndices = [[0,1,2,3],[4,5],[6,7,8,9],[10,11,12],[13,14,15,16,17],[18,19,20,21],[22,23,24],[25,26,27,28]];
                     const radarData = groupLabels.map((label, gi) => {
                         const vals = groupIndices[gi].map((i) => factorMeans[i]).filter((v) => v > 0);
                         const avg = vals.length ? Math.round((vals.reduce((a,b)=>a+b,0)/vals.length)*100)/100 : 0;

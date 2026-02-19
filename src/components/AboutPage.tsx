@@ -341,7 +341,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.0
+                    Version 2.1.1
                 </div>
             </motion.div>
 
@@ -385,11 +385,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.0</p>
+                        <p className="font-bold">2.1.1</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">18 กุมภาพันธ์ 2569</p>
+                        <p className="font-bold">19 กุมภาพันธ์ 2569</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -408,8 +408,8 @@ function AboutContent() {
                 transition={{ delay: 0.3 }}
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
-                <p>© 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement & Happiness Analysis System v2.1.0</p>
+                <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.1</p>
             </motion.div>
         </div>
     );
