@@ -29,6 +29,7 @@ import {
     ClipboardCheck,
     Settings2,
     FileText,
+    Heart,
 } from "lucide-react";
 
 type SubTab = "guide" | "features" | "about";
@@ -295,6 +296,18 @@ function FeaturesContent() {
             desc: "เปรียบเทียบคะแนนรายปี Trend Line รายปัจจัย YoY Change ออกแบบ UI แล้ว จะเปิดใช้งานเต็มรูปแบบใน v2.2.0",
             gradient: "bg-gradient-accent",
         },
+        {
+            icon: BarChart3,
+            title: "ส่วนที่ 2 — วิเคราะห์ปัจจัย (v2.1.2)",
+            desc: "หน้าวิเคราะห์เฉพาะส่วนที่ 2 (29 ข้อ 8 กลุ่ม) Radar Chart โปรไฟล์กลุ่ม Bar Chart รายกลุ่ม/รายข้อ Top 5 / Bottom 5 พร้อม Filter",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Heart,
+            title: "ส่วนที่ 3 — วิเคราะห์ความผูกพัน (v2.1.2)",
+            desc: "หน้าวิเคราะห์เฉพาะส่วนที่ 3 (11 ข้อ 3 กลุ่ม) Radar Chart โปรไฟล์กลุ่ม Bar Chart รายกลุ่ม/รายข้อ Top 3 / Bottom 3 พร้อม Filter",
+            gradient: "bg-gradient-secondary",
+        },
     ];
 
     return (
@@ -341,7 +354,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.1
+                    Version 2.1.2
                 </div>
             </motion.div>
 
@@ -385,11 +398,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.1</p>
+                        <p className="font-bold">2.1.2</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">19 กุมภาพันธ์ 2569</p>
+                        <p className="font-bold">19 กุมภาพันธ์ 2569 (v2.1.2)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -409,7 +422,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.1</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.2</p>
             </motion.div>
         </div>
     );
