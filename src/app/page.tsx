@@ -27,6 +27,8 @@ import ActionPlanTracker from "@/components/ActionPlanTracker";
 import AnomalyDetection from "@/components/AnomalyDetection";
 import SurveyBuilder from "@/components/SurveyBuilder";
 import BenchmarkView from "@/components/BenchmarkView";
+import FactorAnalysis from "@/components/FactorAnalysis";
+import EngagementAnalysis from "@/components/EngagementAnalysis";
 import { useAppState } from "@/lib/store";
 import Image from "next/image";
 
@@ -34,6 +36,8 @@ const TAB_NAMES: Record<string, string> = {
     overview: "ภาพรวม",
     factors: "ปัจจัย",
     engagement: "ความผูกพัน",
+    factors2: "ส่วนที่ 2 — ปัจจัยในงาน",
+    engagement2: "ส่วนที่ 3 — ความสุขและความผูกพัน",
     compare: "เปรียบเทียบ",
     raw: "ข้อมูลดิบ",
     text: "วิเคราะห์ข้อความ",
@@ -118,6 +122,24 @@ function TabContent() {
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูการวิเคราะห์ความผูกพัน" />
                         )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "factors2" && (
+                <motion.div key="factors2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="factors2" />
+                    <div id="tab-content-factors2" className="space-y-5">
+                        <FactorAnalysis />
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "engagement2" && (
+                <motion.div key="engagement2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="engagement2" />
+                    <div id="tab-content-engagement2" className="space-y-5">
+                        <EngagementAnalysis />
                     </div>
                 </motion.div>
             )}

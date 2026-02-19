@@ -20,8 +20,8 @@ import { useAppState, ActiveTab } from "@/lib/store";
 
 const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: LayoutDashboard, label: "ภาพรวม", tab: "overview" },
-    { icon: BarChart3, label: "ปัจจัย", tab: "factors" },
-    { icon: Heart, label: "ผูกพัน", tab: "engagement" },
+    { icon: BarChart3, label: "ส่วน 2", tab: "factors2" },
+    { icon: Heart, label: "ส่วน 3", tab: "engagement2" },
     { icon: GitCompare, label: "เทียบ", tab: "compare" },
     { icon: FileText, label: "ข้อความ", tab: "text" },
     { icon: Users, label: "Cluster", tab: "cluster" },

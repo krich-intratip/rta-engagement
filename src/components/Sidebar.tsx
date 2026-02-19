@@ -33,9 +33,9 @@ const navSections: NavSection[] = [
         section: "วิเคราะห์",
         items: [
             { icon: LayoutDashboard, label: "ภาพรวม", tab: "overview" },
-            { icon: BarChart3, label: "ปัจจัย", tab: "factors" },
-            { icon: Heart, label: "ความผูกพัน", tab: "engagement" },
-            { icon: GitCompare, label: "เปรียบเทียบ", tab: "compare" },
+            { icon: BarChart3, label: "ส่วนที่ 2 — ปัจจัย", tab: "factors2" },
+            { icon: Heart, label: "ส่วนที่ 3 — ความผูกพัน", tab: "engagement2" },
+            { icon: GitCompare, label: "เปรียบเทียบรายกลุ่ม", tab: "compare" },
             { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
         ],
     },
