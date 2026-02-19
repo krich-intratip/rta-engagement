@@ -6,9 +6,10 @@ import { useAppState } from "@/lib/store";
 import { FACTOR_GROUP_INDICES, ENGAGEMENT_GROUP_INDICES, FactorGroup, EngagementGroup } from "@/types/survey";
 import { mean, olsRegression, computeIndirectEffects, pToSig, pToColorClass } from "@/lib/pathStats";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
-import { GitMerge, Download, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { GitMerge, Download, ChevronDown, ChevronUp, Info, BookOpen } from "lucide-react";
 import FilterPanel from "@/components/FilterPanel";
 import PathDiagram from "@/components/PathDiagram";
+import PathInterpretation from "@/components/PathInterpretation";
 
 // ─── Model definition ─────────────────────────────────────────────────────────
 
@@ -79,6 +80,7 @@ export default function PathAnalysis() {
     const [openEq, setOpenEq] = useState<number | null>(0);
     const [openEq2, setOpenEq2] = useState(true);
     const [openIndirect, setOpenIndirect] = useState(false);
+    const [openInterp, setOpenInterp] = useState(true);
 
     // ── Composite scores per person ───────────────────────────────────────────
     const composites = useMemo(() => {
@@ -397,6 +399,34 @@ export default function PathAnalysis() {
                                     ))}
                             </tbody>
                         </table>
+                    </div>
+                )}
+            </div>
+            {/* ── Interpretation Panel ── */}
+            <div className="glass-card overflow-hidden">
+                <button
+                    onClick={() => setOpenInterp(!openInterp)}
+                    className="w-full flex items-center justify-between p-4 hover:bg-[var(--color-primary-light)]/10 transition-colors text-left">
+                    <div className="flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-[var(--color-primary)]" />
+                        <span className="text-sm font-semibold text-[var(--color-text)]">
+                            การแปลความหมายและข้อเสนอแนะเชิงนโยบาย
+                        </span>
+                    </div>
+                    {openInterp
+                        ? <ChevronUp className="w-4 h-4 text-[var(--color-text-secondary)]" />
+                        : <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)]" />}
+                </button>
+                {openInterp && (
+                    <div className="p-4 border-t border-[var(--color-border)]">
+                        <PathInterpretation
+                            factorNodes={FACTOR_NODES}
+                            engNodes={ENG_NODES}
+                            eq1={eq1}
+                            eq2={eq2}
+                            effects={effects}
+                            n={filteredData.length}
+                        />
                     </div>
                 )}
             </div>

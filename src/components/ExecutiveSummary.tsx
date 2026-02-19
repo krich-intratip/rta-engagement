@@ -586,7 +586,7 @@ ${printRef.current.innerHTML}
 
                 {/* Footer */}
                 <div className="text-center text-xs text-[var(--color-text-light)] py-2">
-                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.4</p>
+                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.7</p>
                     <p className="mt-0.5">© 2026 พล.ท.ดร.กริช อินทราทิพย์ — ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลออกภายนอก</p>
                 </div>
             </div>

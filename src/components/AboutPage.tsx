@@ -411,6 +411,12 @@ function FeaturesContent() {
             desc: "Composite-based SEM: 8 กลุ่มปัจจัย → 3 กลุ่มความผูกพัน → ความตั้งใจอยู่ต่อ แสดง Path Diagram แบบ Interactive, Standardized β + t-test, Direct/Indirect/Total Effects, R² ทุก equation และ Export CSV",
             gradient: "bg-gradient-accent",
         },
+        {
+            icon: BookOpen,
+            title: "Path Interpretation Panel (v2.1.7)",
+            desc: "แปลความหมายผล Path Model อัตโนมัติ: R², เส้นทางที่มีนัยสำคัญ, ผลทางอ้อม และข้อเสนอแนะเชิงนโยบายแบบละเอียด พร้อมคำอธิบายวิธีอ่านผลและข้อจำกัดของโมเดล นำไปประยุกต์ใช้งานได้ทันที",
+            gradient: "bg-gradient-lavender",
+        },
     ];
 
     return (
@@ -457,7 +463,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.6
+                    Version 2.1.7
                 </div>
             </motion.div>
 
@@ -501,11 +507,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.6</p>
+                        <p className="font-bold">2.1.7</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">19 กุมภาพันธ์ 2569 (v2.1.6)</p>
+                        <p className="font-bold">19 กุมภาพันธ์ 2569 (v2.1.7)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -525,7 +531,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.6</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.7</p>
             </motion.div>
         </div>
     );

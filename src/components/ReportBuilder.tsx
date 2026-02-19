@@ -96,7 +96,7 @@ export default function ReportBuilder() {
             const lines = pdf.splitTextToSize(`ประกอบด้วย: ${sectionNames}`, contentW);
             pdf.text(lines, pageW / 2, 120, { align: "center" });
             pdf.setTextColor(80, 80, 100);
-            pdf.text("v2.1.5 · RTA Engagement Analysis System", pageW / 2, pageH - 15, { align: "center" });
+            pdf.text("v2.1.7 · RTA Engagement Analysis System", pageW / 2, pageH - 15, { align: "center" });
 
             // Capture each section
             for (const section of sections) {
