@@ -17,6 +17,7 @@ import {
     Settings2,
     TrendingUp,
     ShieldAlert,
+    Network,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 
@@ -31,6 +32,7 @@ const navItems: { icon: React.ElementType; label: string; tab: ActiveTab }[] = [
     { icon: GitMerge, label: "Corr.", tab: "correlation" },
     { icon: AlertTriangle, label: "Anomaly", tab: "anomaly" },
     { icon: ShieldAlert, label: "Risk", tab: "risk" },
+    { icon: Network, label: "Path", tab: "path" },
     { icon: TrendingUp, label: "Benchmark", tab: "benchmark" },
     { icon: ClipboardList, label: "สรุป", tab: "executive" },
     { icon: ClipboardCheck, label: "Action", tab: "actionplan" },

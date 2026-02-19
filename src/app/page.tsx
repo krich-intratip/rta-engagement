@@ -32,6 +32,7 @@ import EngagementAnalysis from "@/components/EngagementAnalysis";
 import CrossAnalysis from "@/components/CrossAnalysis";
 import PredictiveRisk from "@/components/PredictiveRisk";
 import ReportBuilder from "@/components/ReportBuilder";
+import PathAnalysis from "@/components/PathAnalysis";
 import { useAppState } from "@/lib/store";
 import { useEffect } from "react";
 import Image from "next/image";
@@ -54,6 +55,7 @@ const TAB_NAMES: Record<string, string> = {
     surveybuilder: "Survey Builder",
     benchmark: "Benchmark",
     risk: "Predictive Risk Score",
+    path: "Path Analysis — PLS-PM",
     about: "เกี่ยวกับ",
 };
 
@@ -287,6 +289,15 @@ function TabContent() {
                     <TabHeader tabKey="risk" />
                     <div id="tab-content-risk" className="space-y-5">
                         {hasData ? <PredictiveRisk /> : <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดู Predictive Risk Score" />}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "path" && (
+                <motion.div key="path" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="path" />
+                    <div id="tab-content-path" className="space-y-5">
+                        {hasData ? <PathAnalysis /> : <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อวิเคราะห์ Path Model" />}
                     </div>
                 </motion.div>
             )}

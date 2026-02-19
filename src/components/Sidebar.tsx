@@ -23,6 +23,7 @@ import {
     TrendingUp,
     Link2,
     ShieldAlert,
+    Network,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
@@ -49,6 +50,7 @@ const navSections: NavSection[] = [
             { icon: GitMerge, label: "Correlation Matrix", tab: "correlation" },
             { icon: AlertTriangle, label: "Anomaly Detection", tab: "anomaly" },
             { icon: ShieldAlert, label: "Predictive Risk", tab: "risk" },
+            { icon: Network, label: "Path Analysis", tab: "path" },
             { icon: TrendingUp, label: "Benchmark", tab: "benchmark", badge: "Soon" },
         ],
     },
