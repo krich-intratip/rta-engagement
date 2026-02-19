@@ -21,6 +21,7 @@ import {
     AlertTriangle,
     Settings2,
     TrendingUp,
+    Link2,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
@@ -35,6 +36,7 @@ const navSections: NavSection[] = [
             { icon: LayoutDashboard, label: "ภาพรวม", tab: "overview" },
             { icon: BarChart3, label: "ส่วนที่ 2 — ปัจจัย", tab: "factors2" },
             { icon: Heart, label: "ส่วนที่ 3 — ความผูกพัน", tab: "engagement2" },
+            { icon: Link2, label: "ส่วนที่ 2 × 3 (Cross)", tab: "crossanalysis" },
             { icon: GitCompare, label: "เปรียบเทียบรายกลุ่ม", tab: "compare" },
             { icon: FileText, label: "วิเคราะห์ข้อความ", tab: "text" },
         ],

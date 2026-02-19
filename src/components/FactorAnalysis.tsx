@@ -14,8 +14,48 @@ import {
     ResponsiveContainer, Cell, RadarChart, Radar, PolarGrid,
     PolarAngleAxis, PolarRadiusAxis, Legend,
 } from "recharts";
-import { BarChart3, ChevronDown, ChevronUp } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronUp, Download } from "lucide-react";
 import FilterPanel from "@/components/FilterPanel";
+
+const LIKERT_COLORS = ["#ef4444", "#f97316", "#fbbf24", "#34d399", "#10b981"];
+const LIKERT_LABELS = ["น้อยที่สุด (1)", "น้อย (2)", "ปานกลาง (3)", "มาก (4)", "มากที่สุด (5)"];
+
+function LikertBar({ dist, n }: { dist: number[]; n: number }) {
+    if (n === 0) return null;
+    return (
+        <div className="flex h-3 rounded-full overflow-hidden w-full">
+            {dist.map((count, lvl) => {
+                const pct = (count / n) * 100;
+                if (pct === 0) return null;
+                return (
+                    <div
+                        key={lvl}
+                        style={{ width: `${pct}%`, background: LIKERT_COLORS[lvl] }}
+                        title={`${LIKERT_LABELS[lvl]}: ${count} คน (${pct.toFixed(1)}%)`}
+                    />
+                );
+            })}
+        </div>
+    );
+}
+
+function exportCSV(itemMeans: number[], filteredData: { factors: number[] }[]) {
+    const rows = ["ลำดับ,ข้อคำถาม,กลุ่ม,ค่าเฉลี่ย,1,2,3,4,5"];
+    const { FACTOR_LABELS: FL, FACTOR_GROUP_INDICES: FGI } = require("@/types/survey");
+    const groupOf: string[] = Array(29).fill("");
+    Object.entries(FGI).forEach(([g, idxs]: [string, unknown]) => {
+        (idxs as number[]).forEach((i) => { groupOf[i] = g; });
+    });
+    itemMeans.forEach((mean, i) => {
+        const dist = [0, 0, 0, 0, 0];
+        filteredData.forEach((r) => { const v = r.factors[i]; if (v >= 1 && v <= 5) dist[v - 1]++; });
+        rows.push(`${i + 1},"${FL[i]}","${groupOf[i]}",${mean.toFixed(2)},${dist.join(",")}`);
+    });
+    const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = "factor_analysis.csv"; a.click();
+    URL.revokeObjectURL(url);
+}
 
 const GROUP_COLORS: Record<string, string> = {
     [FactorGroup.JobCharacteristics]:   "#3B7DD8",
@@ -57,11 +97,21 @@ function RatingBadge({ score }: { score: number }) {
 export default function FactorAnalysis() {
     const { filteredData } = useAppState();
     const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+    const [showDist, setShowDist] = useState(false);
 
     const itemMeans = useMemo(() =>
         Array.from({ length: 29 }, (_, i) => {
             const vals = filteredData.map((r) => r.factors[i]).filter((v) => v > 0);
             return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+        }),
+        [filteredData]
+    );
+
+    const itemDists = useMemo(() =>
+        Array.from({ length: 29 }, (_, i) => {
+            const dist = [0, 0, 0, 0, 0];
+            filteredData.forEach((r) => { const v = r.factors[i]; if (v >= 1 && v <= 5) dist[v - 1]++; });
+            return dist;
         }),
         [filteredData]
     );
@@ -100,6 +150,28 @@ export default function FactorAnalysis() {
     return (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
             <FilterPanel />
+
+            {/* Toolbar */}
+            <div className="flex items-center justify-end gap-2">
+                <button
+                    onClick={() => setShowDist((v) => !v)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${
+                        showDist
+                            ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
+                            : "border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
+                    }`}
+                >
+                    <BarChart3 className="w-3.5 h-3.5" />
+                    {showDist ? "ซ่อน Distribution" : "แสดง Distribution"}
+                </button>
+                <button
+                    onClick={() => exportCSV(itemMeans, filteredData)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-emerald-500 hover:text-emerald-600 transition-colors"
+                >
+                    <Download className="w-3.5 h-3.5" />
+                    Export CSV
+                </button>
+            </div>
 
             {/* Header KPI */}
             <div className="glass-card p-5">
@@ -245,12 +317,28 @@ export default function FactorAnalysis() {
                                     </div>
 
                                     {/* Score rows */}
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                         {itemData.map((item, qi) => (
-                                            <div key={item.idx} className="flex items-center gap-3">
-                                                <span className="text-[10px] text-[var(--color-text-secondary)] w-4 flex-shrink-0">{qi + 1}.</span>
-                                                <span className="text-xs text-[var(--color-text)] w-40 flex-shrink-0 truncate" title={item.label}>{item.label}</span>
-                                                <ScoreBar score={item.mean} />
+                                            <div key={item.idx} className="space-y-1">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-[10px] text-[var(--color-text-secondary)] w-4 flex-shrink-0">{qi + 1}.</span>
+                                                    <span className="text-xs text-[var(--color-text)] w-40 flex-shrink-0 truncate" title={item.label}>{item.label}</span>
+                                                    <ScoreBar score={item.mean} />
+                                                </div>
+                                                {showDist && (
+                                                    <div className="ml-7 space-y-0.5">
+                                                        <LikertBar dist={itemDists[item.idx]} n={filteredData.length} />
+                                                        <div className="flex gap-1 flex-wrap">
+                                                            {itemDists[item.idx].map((cnt, lvl) => (
+                                                                cnt > 0 && (
+                                                                    <span key={lvl} className="text-[9px]" style={{ color: LIKERT_COLORS[lvl] }}>
+                                                                        {lvl + 1}:{cnt}({((cnt / filteredData.length) * 100).toFixed(0)}%)
+                                                                    </span>
+                                                                )
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

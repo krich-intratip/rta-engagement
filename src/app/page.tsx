@@ -29,6 +29,7 @@ import SurveyBuilder from "@/components/SurveyBuilder";
 import BenchmarkView from "@/components/BenchmarkView";
 import FactorAnalysis from "@/components/FactorAnalysis";
 import EngagementAnalysis from "@/components/EngagementAnalysis";
+import CrossAnalysis from "@/components/CrossAnalysis";
 import { useAppState } from "@/lib/store";
 import Image from "next/image";
 
@@ -38,6 +39,7 @@ const TAB_NAMES: Record<string, string> = {
     engagement: "ความผูกพัน",
     factors2: "ส่วนที่ 2 — ปัจจัยในงาน",
     engagement2: "ส่วนที่ 3 — ความสุขและความผูกพัน",
+    crossanalysis: "วิเคราะห์ความสัมพันธ์ ส่วนที่ 2 × 3",
     compare: "เปรียบเทียบ",
     raw: "ข้อมูลดิบ",
     text: "วิเคราะห์ข้อความ",
@@ -64,6 +66,12 @@ function TabHeader({ tabKey }: { tabKey: string }) {
 
 function TabContent() {
     const { state } = useAppState();
+
+    // UX: scroll main to top on tab change
+    if (typeof window !== "undefined") {
+        const main = document.querySelector("main");
+        if (main) main.scrollTop = 0;
+    }
     const hasData = state.analysisResult && state.analysisResult.totalResponses > 0;
 
     return (
@@ -122,6 +130,15 @@ function TabContent() {
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดูการวิเคราะห์ความผูกพัน" />
                         )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "crossanalysis" && (
+                <motion.div key="crossanalysis" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="crossanalysis" />
+                    <div id="tab-content-crossanalysis" className="space-y-5">
+                        <CrossAnalysis />
                     </div>
                 </motion.div>
             )}
