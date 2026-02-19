@@ -12,7 +12,7 @@ import {
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
     ResponsiveContainer, Cell, RadarChart, Radar, PolarGrid,
-    PolarAngleAxis, PolarRadiusAxis, Legend,
+    PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
 import { BarChart3, ChevronDown, ChevronUp, Download } from "lucide-react";
 import FilterPanel from "@/components/FilterPanel";
@@ -40,16 +40,15 @@ function LikertBar({ dist, n }: { dist: number[]; n: number }) {
 }
 
 function exportCSV(itemMeans: number[], filteredData: { factors: number[] }[]) {
-    const rows = ["ลำดับ,ข้อคำถาม,กลุ่ม,ค่าเฉลี่ย,1,2,3,4,5"];
-    const { FACTOR_LABELS: FL, FACTOR_GROUP_INDICES: FGI } = require("@/types/survey");
     const groupOf: string[] = Array(29).fill("");
-    Object.entries(FGI).forEach(([g, idxs]: [string, unknown]) => {
-        (idxs as number[]).forEach((i) => { groupOf[i] = g; });
+    Object.entries(FACTOR_GROUP_INDICES).forEach(([g, idxs]) => {
+        idxs.forEach((i) => { groupOf[i] = g; });
     });
+    const rows = ["ลำดับ,ข้อคำถาม,กลุ่ม,ค่าเฉลี่ย,1,2,3,4,5"];
     itemMeans.forEach((mean, i) => {
         const dist = [0, 0, 0, 0, 0];
         filteredData.forEach((r) => { const v = r.factors[i]; if (v >= 1 && v <= 5) dist[v - 1]++; });
-        rows.push(`${i + 1},"${FL[i]}","${groupOf[i]}",${mean.toFixed(2)},${dist.join(",")}`);
+        rows.push(`${i + 1},"${FACTOR_LABELS[i]}","${groupOf[i]}",${mean.toFixed(2)},${dist.join(",")}`);
     });
     const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);

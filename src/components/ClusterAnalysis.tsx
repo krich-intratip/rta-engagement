@@ -106,7 +106,7 @@ export default function ClusterAnalysis() {
 
         // Radar data: group-level means per cluster
         const groupLabels = ["ลักษณะงาน", "สภาพแวดล้อม", "คุณภาพชีวิต", "เพื่อนร่วมงาน", "ผู้บังคับบัญชา", "นโยบาย", "ค่าตอบแทน", "ความก้าวหน้า"];
-        const groupIndices = [[0,1,2,3],[4,5,6],[7,8,9],[10,11,12],[13,14,15,16,17],[18,19,20,21],[22,23,24],[25,26,27,28]];
+        const groupIndices = [[0,1,2,3],[4,5],[6,7,8,9],[10,11,12],[13,14,15,16,17],[18,19,20,21],[22,23,24],[25,26,27,28]];
         const radarData = groupLabels.map((label, gi) => {
             const entry: Record<string, number | string> = { label };
             [0, 1, 2].forEach((ci) => {

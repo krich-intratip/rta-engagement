@@ -40,16 +40,15 @@ function LikertBar({ dist, n }: { dist: number[]; n: number }) {
 }
 
 function exportCSV(itemMeans: number[], filteredData: { engagement: number[] }[]) {
-    const { ENGAGEMENT_LABELS: EL, ENGAGEMENT_GROUP_INDICES: EGI } = require("@/types/survey");
     const groupOf: string[] = Array(11).fill("");
-    Object.entries(EGI).forEach(([g, idxs]: [string, unknown]) => {
-        (idxs as number[]).forEach((i) => { groupOf[i] = g; });
+    Object.entries(ENGAGEMENT_GROUP_INDICES).forEach(([g, idxs]) => {
+        idxs.forEach((i) => { groupOf[i] = g; });
     });
     const rows = ["ลำดับ,ข้อคำถาม,กลุ่ม,ค่าเฉลี่ย,1,2,3,4,5"];
     itemMeans.forEach((mean, i) => {
         const dist = [0, 0, 0, 0, 0];
         filteredData.forEach((r) => { const v = r.engagement[i]; if (v >= 1 && v <= 5) dist[v - 1]++; });
-        rows.push(`${i + 1},"${EL[i]}","${groupOf[i]}",${mean.toFixed(2)},${dist.join(",")}`);
+        rows.push(`${i + 1},"${ENGAGEMENT_LABELS[i]}","${groupOf[i]}",${mean.toFixed(2)},${dist.join(",")}`);
     });
     const blob = new Blob(["\uFEFF" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);

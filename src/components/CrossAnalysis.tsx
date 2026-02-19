@@ -64,6 +64,9 @@ const ENG_GROUP_COLORS: Record<string, string> = {
     [EngagementGroup.OrganizationalTrust]: "#3B7DD8",
 };
 
+const FACTOR_GROUP_NAMES = Object.keys(FACTOR_GROUP_INDICES);
+const ENG_GROUP_NAMES = Object.keys(ENGAGEMENT_GROUP_INDICES);
+
 export default function CrossAnalysis() {
     const { filteredData } = useAppState();
 
@@ -98,29 +101,28 @@ export default function CrossAnalysis() {
         [filteredData]
     );
 
-    const factorGroupNames = Object.keys(FACTOR_GROUP_INDICES);
-    const engGroupNames = Object.keys(ENGAGEMENT_GROUP_INDICES);
-
     // Correlation matrix: factor group × engagement group
     const corrMatrix = useMemo(() =>
-        factorGroupNames.map((_, fi) =>
-            engGroupNames.map((_, ei) => {
+        FACTOR_GROUP_NAMES.map((_, fi) =>
+            ENG_GROUP_NAMES.map((_, ei) => {
                 const xs = personFactorGroups.map((p) => p[fi]);
                 const ys = personEngGroups.map((p) => p[ei]);
                 return Math.round(pearson(xs, ys) * 1000) / 1000;
             })
         ),
-        [personFactorGroups, personEngGroups, factorGroupNames, engGroupNames]
+        [personFactorGroups, personEngGroups]
     );
 
     // Factor item × overall engagement correlation (top predictors)
+    // Fix: pair xs/ys per-person to keep arrays aligned
     const itemCorrs = useMemo(() =>
         FACTOR_LABELS.map((label, i) => {
-            const xs = filteredData.map((r) => r.factors[i]).filter((_, j) => personEngOverall[j] > 0);
-            const ys = personEngOverall.filter((v) => v > 0);
-            const minLen = Math.min(xs.length, ys.length);
-            const r = pearson(xs.slice(0, minLen), ys.slice(0, minLen));
-            // find group
+            const pairs = filteredData
+                .map((r) => ({ x: r.factors[i], y: personEngOverall[filteredData.indexOf(r)] }))
+                .filter((p) => p.x > 0 && p.y > 0);
+            const xs = pairs.map((p) => p.x);
+            const ys = pairs.map((p) => p.y);
+            const r = pearson(xs, ys);
             let group = "";
             Object.entries(FACTOR_GROUP_INDICES).forEach(([g, idxs]) => {
                 if (idxs.includes(i)) group = g;
@@ -225,7 +227,7 @@ export default function CrossAnalysis() {
                         <thead>
                             <tr>
                                 <th className="text-left p-2 text-[var(--color-text-secondary)] font-medium w-44">กลุ่มปัจจัย (ส่วนที่ 2)</th>
-                                {engGroupNames.map((eg) => (
+                                {ENG_GROUP_NAMES.map((eg: string) => (
                                     <th key={eg} className="p-2 text-center text-[var(--color-text-secondary)] font-medium min-w-[110px]">
                                         <span className="inline-block px-1.5 py-0.5 rounded-full text-white text-[9px]" style={{ background: ENG_GROUP_COLORS[eg] ?? "#94a3b8" }}>
                                             {eg}
@@ -235,7 +237,7 @@ export default function CrossAnalysis() {
                             </tr>
                         </thead>
                         <tbody>
-                            {factorGroupNames.map((fg, fi) => (
+                            {FACTOR_GROUP_NAMES.map((fg: string, fi: number) => (
                                 <tr key={fg} className="border-t border-[var(--color-border)]">
                                     <td className="p-2 font-medium text-[var(--color-text)]">
                                         <div className="flex items-center gap-1.5">

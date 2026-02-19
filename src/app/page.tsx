@@ -31,6 +31,7 @@ import FactorAnalysis from "@/components/FactorAnalysis";
 import EngagementAnalysis from "@/components/EngagementAnalysis";
 import CrossAnalysis from "@/components/CrossAnalysis";
 import { useAppState } from "@/lib/store";
+import { useEffect } from "react";
 import Image from "next/image";
 
 const TAB_NAMES: Record<string, string> = {
@@ -68,10 +69,11 @@ function TabContent() {
     const { state } = useAppState();
 
     // UX: scroll main to top on tab change
-    if (typeof window !== "undefined") {
+    useEffect(() => {
         const main = document.querySelector("main");
         if (main) main.scrollTop = 0;
-    }
+    }, [state.activeTab]);
+
     const hasData = state.analysisResult && state.analysisResult.totalResponses > 0;
 
     return (

@@ -290,13 +290,9 @@ export default function ExecutiveSummary() {
     const { state, filteredData } = useAppState();
     const result = state.analysisResult;
     const printRef = useRef<HTMLDivElement>(null);
+    const [exporting, setExporting] = useState(false);
 
-    if (!result || filteredData.length === 0) return null;
-
-    const n = filteredData.length;
-    const totalN = state.surveyData.length;
-    const isFiltered = n < totalN;
-
+    // All hooks must be called before any early return
     const factorMeans = useMemo(() => Array.from({ length: 29 }, (_, i) => {
         const vals = filteredData.map((r) => r.factors[i]).filter((v) => v > 0);
         return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
@@ -307,8 +303,18 @@ export default function ExecutiveSummary() {
         return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
     }), [filteredData]);
 
-    const overallFactor = factorMeans.filter((v) => v > 0).reduce((a, b) => a + b, 0) / factorMeans.filter((v) => v > 0).length;
-    const overallEng = engMeans.filter((v) => v > 0).reduce((a, b) => a + b, 0) / engMeans.filter((v) => v > 0).length;
+    const strengths = useMemo(() => generateStrengths(factorMeans, engMeans), [factorMeans, engMeans]);
+    const improvements = useMemo(() => generateImprovements(factorMeans, engMeans), [factorMeans, engMeans]);
+    const recommendations = useMemo(() => generateRecommendations(factorMeans, engMeans), [factorMeans, engMeans]);
+
+    if (!result || filteredData.length === 0) return null;
+
+    const n = filteredData.length;
+    const totalN = state.surveyData.length;
+    const isFiltered = n < totalN;
+
+    const overallFactor = factorMeans.filter((v) => v > 0).reduce((a, b) => a + b, 0) / (factorMeans.filter((v) => v > 0).length || 1);
+    const overallEng = engMeans.filter((v) => v > 0).reduce((a, b) => a + b, 0) / (engMeans.filter((v) => v > 0).length || 1);
 
     const top5Factors = [...factorMeans.map((m, i) => ({ label: FACTOR_LABELS[i], mean: m, idx: i }))]
         .sort((a, b) => b.mean - a.mean).slice(0, 5);
@@ -318,12 +324,6 @@ export default function ExecutiveSummary() {
         .sort((a, b) => b.mean - a.mean).slice(0, 3);
     const bottom3Eng = [...engMeans.map((m, i) => ({ label: ENGAGEMENT_LABELS[i], mean: m, idx: i }))]
         .filter((e) => e.mean > 0).sort((a, b) => a.mean - b.mean).slice(0, 3);
-
-    const strengths = useMemo(() => generateStrengths(factorMeans, engMeans), [factorMeans, engMeans]);
-    const improvements = useMemo(() => generateImprovements(factorMeans, engMeans), [factorMeans, engMeans]);
-    const recommendations = useMemo(() => generateRecommendations(factorMeans, engMeans), [factorMeans, engMeans]);
-
-    const [exporting, setExporting] = useState(false);
 
     const handlePrint = () => window.print();
 
@@ -580,7 +580,7 @@ ${printRef.current.innerHTML}
 
                 {/* Footer */}
                 <div className="text-center text-xs text-[var(--color-text-light)] py-2">
-                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.0</p>
+                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.4</p>
                     <p className="mt-0.5">© 2026 พล.ท.ดร.กริช อินทราทิพย์ — ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลออกภายนอก</p>
                 </div>
             </div>
