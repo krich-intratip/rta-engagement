@@ -333,21 +333,27 @@ export default function ExecutiveSummary() {
         try {
             const html2canvas = (await import("html2canvas-pro")).default;
             const { jsPDF } = await import("jspdf");
-            const canvas = await html2canvas(printRef.current, { scale: 1.5, useCORS: true, backgroundColor: "#ffffff" });
+            const canvas = await html2canvas(printRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                logging: false,
+            });
             const imgData = canvas.toDataURL("image/png");
             const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
             const pageW = pdf.internal.pageSize.getWidth();
             const pageH = pdf.internal.pageSize.getHeight();
-            const imgW = pageW - 20;
-            const imgH = (canvas.height * imgW) / canvas.width;
-            let y = 10;
-            let remaining = imgH;
-            while (remaining > 0) {
-                const sliceH = Math.min(remaining, pageH - 20);
-                pdf.addImage(imgData, "PNG", 10, y, imgW, imgH, undefined, "FAST", 0);
-                remaining -= sliceH;
-                if (remaining > 0) { pdf.addPage(); y = 10 - (imgH - remaining); }
-                else break;
+            const margin = 10;
+            const contentW = pageW - margin * 2;
+            const contentH = pageH - margin * 2;
+            // Total rendered height in mm
+            const totalImgH = (canvas.height * contentW) / canvas.width;
+            const totalPages = Math.ceil(totalImgH / contentH);
+            for (let page = 0; page < totalPages; page++) {
+                if (page > 0) pdf.addPage();
+                // Shift image up by (page * contentH) so each page shows the correct slice
+                const yOffset = margin - page * contentH;
+                pdf.addImage(imgData, "PNG", margin, yOffset, contentW, totalImgH, undefined, "FAST");
             }
             pdf.save("executive-summary-rta.pdf");
         } catch (e) {

@@ -101,6 +101,30 @@ export default function FilterPanel() {
                 </div>
             </button>
 
+            {/* Active filter summary chips */}
+            {!isEmpty && (
+                <div className="px-4 pb-3 flex flex-wrap gap-1.5 border-t border-[var(--color-border)] pt-2">
+                    {FILTER_FIELDS.flatMap((field) =>
+                        filters[field.key].map((val) => (
+                            <span
+                                key={`${field.key}-${val}`}
+                                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--color-primary-light)]/20 text-[var(--color-primary-dark)] border border-[var(--color-primary-light)]/40"
+                            >
+                                <span className="text-[10px] text-[var(--color-text-secondary)]">{field.label}:</span>
+                                {val.length > 18 ? val.substring(0, 18) + "…" : val}
+                                <button
+                                    onClick={() => toggleValue(field.key, val)}
+                                    className="ml-0.5 hover:text-red-500 transition-colors"
+                                    aria-label={`ลบ ${field.label}: ${val}`}
+                                >
+                                    <X className="w-3 h-3" />
+                                </button>
+                            </span>
+                        ))
+                    )}
+                </div>
+            )}
+
             {/* Filter body */}
             <AnimatePresence>
                 {open && (

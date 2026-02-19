@@ -31,6 +31,8 @@ import {
     FileText,
     Heart,
     Link2,
+    ShieldAlert,
+    RefreshCw,
 } from "lucide-react";
 
 type SubTab = "guide" | "features" | "about";
@@ -126,11 +128,26 @@ function GuideContent() {
         {
             icon: AlertTriangle,
             title: "17. Anomaly Detection",
-            desc: "เมนู 'Anomaly Detection' ตรวจจับหน่วยงานที่คะแนนต่ำกว่าค่าเฉลี่ยองค์กรอย่างมีนัยสำคัญ (Z-score) แสดงระดับความเสี่ยงและปัจจัยที่น่าเป็นห่วง",
+            desc: "เมนู 'Anomaly Detection' ตรวจจับหน่วยงานที่มีคะแนนต่ำกว่าค่าเฉลี่ยองค์กรอย่างมีนัยสำคัญ (Z-score) เมื่อมีหน่วยที่ผิดปกติ จะแสดง badge สีแดงพร้อมจำนวนบนเมนูทันที",
+        },
+        {
+            icon: ShieldAlert,
+            title: "18. Predictive Risk Score",
+            desc: "เมนู 'Predictive Risk' คำนวณความเสี่ยงรายบุคคล จัดระดับเสี่ยงสูง/กลาง/ต่ำ ดูการกระจายตามประชากรศาสตร์ ตารางรายบุคคล และ Export CSV",
+        },
+        {
+            icon: RefreshCw,
+            title: "19. Auto-Refresh Google Sheets",
+            desc: "เมื่อโหลดข้อมูลจาก Google Sheets แล้ว จะปรากฏตัวเลือก Auto-Refresh เลือกรอบได้ 5/15/30 นาที ระบบจะดึงข้อมูลใหม่อัตโนมัติพร้อมแสดง countdown timer",
+        },
+        {
+            icon: FileText,
+            title: "20. Report Builder",
+            desc: "ในหน้า 'สรุปผู้บริหาร' กด Report Builder เลือก section ที่ต้องการแล้วกด Export PDF ระบบจะสร้าง PDF หลายหน้าพร้อมหน้าปกสวยงามและแต่ละ section แยกหน้าอย่างชัดเจน",
         },
         {
             icon: ClipboardCheck,
-            title: "18. Action Plan Tracker",
+            title: "21. Action Plan Tracker",
             desc: "เมนู 'Action Plan' บันทึกแผนปฏิบัติการ กำหนดผู้รับผิดชอบ due date ความเร่งด่วน ติดตามความคืบหน้า ข้อมูลบันทึกใน localStorage ไม่หายเมื่อปิดเบราว์เซอร์",
         },
     ];
@@ -354,8 +371,38 @@ function FeaturesContent() {
         {
             icon: Shield,
             title: "Bug Fixes (v2.1.4)",
-            desc: "แก้ Rules of Hooks ใน ExecutiveSummary (ย้าย useMemo ขึ้นก่อน early return) แก้ groupIndices ผิดใน ClusterAnalysis แก้ require() ใน client component (FactorAnalysis/EngagementAnalysis) แก้ side effect ใน render body (scroll-to-top) และแก้ itemCorrs array alignment ใน CrossAnalysis",
+            desc: "แก้ Rules of Hooks ใน ExecutiveSummary แก้ groupIndices ผิดใน ClusterAnalysis แก้ require() ใน client component แก้ side effect ใน render body และแก้ itemCorrs array alignment ใน CrossAnalysis",
             gradient: "bg-gradient-primary",
+        },
+        {
+            icon: Filter,
+            title: "Active Filter Summary Bar (v2.1.5)",
+            desc: "แถบแสดง filter ที่ active เป็น chip พร้อมปุ่ม × ลบแต่ละตัวได้ทันที โดยไม่ต้องเปิด panel",
+            gradient: "bg-gradient-secondary",
+        },
+        {
+            icon: AlertTriangle,
+            title: "Anomaly Notification Badge (v2.1.5)",
+            desc: "แสดง badge สีแดงบนเมนู Anomaly Detection เมื่อตรวจพบหน่วยงานที่มี Z-score ≤ −1 พร้อมจำนวนหน่วยที่ผิดปกติ",
+            gradient: "bg-gradient-accent",
+        },
+        {
+            icon: ShieldAlert,
+            title: "Predictive Risk Score (v2.1.5)",
+            desc: "คำนวณความเสี่ยงรายบุคคล (Weighted Factor Risk + Low Engagement) จัดระดับเสี่ยงสูง/กลาง/ต่ำ แสดงการกระจายตามประชากรศาสตร์ ตารางรายบุคคล Export CSV",
+            gradient: "bg-gradient-lavender",
+        },
+        {
+            icon: RefreshCw,
+            title: "Auto-Refresh Google Sheets (v2.1.5)",
+            desc: "ตั้งรอบ refresh อัตโนมัติจาก Google Sheets ทุก 5/15/30 นาที พร้อม countdown timer และ last-updated timestamp",
+            gradient: "bg-gradient-primary",
+        },
+        {
+            icon: FileText,
+            title: "Report Builder + PDF Export (v2.1.5)",
+            desc: "เลือก section ที่ต้องการแล้ว export เป็น PDF หลายหน้าพร้อมหน้าปก สารบัญ และส่วนแยกแต่ละ section ในหน้า Executive Summary",
+            gradient: "bg-gradient-secondary",
         },
     ];
 
@@ -403,7 +450,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.4
+                    Version 2.1.5
                 </div>
             </motion.div>
 
@@ -447,11 +494,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.4</p>
+                        <p className="font-bold">2.1.5</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">19 กุมภาพันธ์ 2569 (v2.1.4)</p>
+                        <p className="font-bold">19 กุมภาพันธ์ 2569 (v2.1.5)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -471,7 +518,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.4</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.5</p>
             </motion.div>
         </div>
     );

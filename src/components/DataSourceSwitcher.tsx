@@ -1,9 +1,9 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Globe, FileSpreadsheet, Loader2, CheckCircle2, AlertCircle, X, Link } from "lucide-react";
+import { Upload, Globe, FileSpreadsheet, Loader2, CheckCircle2, AlertCircle, X, Link, RefreshCw, Clock } from "lucide-react";
 import { useAppState } from "@/lib/store";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { parseExcelFile } from "@/lib/data-parser";
 import { fetchGoogleSheetData, buildGoogleSheetCsvUrl } from "@/lib/data-fetcher";
 import { analyzeData } from "@/lib/analysis";
@@ -17,11 +17,24 @@ function parseGoogleSheetUrl(url: string): { sheetId: string; gid: string } | nu
     return { sheetId, gid };
 }
 
+const REFRESH_OPTIONS = [
+    { label: "ปิด", value: 0 },
+    { label: "5 นาที", value: 5 },
+    { label: "15 นาที", value: 15 },
+    { label: "30 นาที", value: 30 },
+];
+
 export default function DataSourceSwitcher() {
     const { state, dispatch } = useAppState();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragOver, setDragOver] = useState(false);
     const [customUrl, setCustomUrl] = useState("");
+    const [refreshInterval, setRefreshInterval] = useState(0);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [countdown, setCountdown] = useState(0);
+    const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const activeUrlRef = useRef<string | null>(null);
 
     const handleFileUpload = useCallback(
         async (file: File) => {
@@ -38,36 +51,55 @@ export default function DataSourceSwitcher() {
         [dispatch]
     );
 
-    const handleGoogleFetch = useCallback(async () => {
+    const doFetch = useCallback(async (csvUrl?: string) => {
         dispatch({ type: "SET_LOADING", payload: true });
         try {
-            const data = await fetchGoogleSheetData();
+            const data = await fetchGoogleSheetData(csvUrl);
             if (data.length === 0) throw new Error("ไม่พบข้อมูลใน Google Sheet");
             const analysis = analyzeData(data);
-            dispatch({ type: "SET_DATA", payload: { data, analysis, fileName: "Google Sheets (Default)" } });
+            const label = csvUrl ? "Google Sheets (Custom)" : "Google Sheets (Default)";
+            dispatch({ type: "SET_DATA", payload: { data, analysis, fileName: label } });
+            setLastUpdated(new Date());
         } catch (err) {
             dispatch({ type: "SET_ERROR", payload: String(err) });
         }
     }, [dispatch]);
 
-    const handleCustomUrlFetch = useCallback(async () => {
+    const handleGoogleFetch = useCallback(() => {
+        activeUrlRef.current = null;
+        doFetch();
+    }, [doFetch]);
+
+    const handleCustomUrlFetch = useCallback(() => {
         if (!customUrl.trim()) return;
         const parsed = parseGoogleSheetUrl(customUrl.trim());
         if (!parsed) {
             dispatch({ type: "SET_ERROR", payload: "URL ไม่ถูกต้อง กรุณาใส่ลิงค์ Google Sheets ที่ถูกต้อง" });
             return;
         }
-        dispatch({ type: "SET_LOADING", payload: true });
-        try {
-            const csvUrl = buildGoogleSheetCsvUrl(parsed.sheetId, parsed.gid);
-            const data = await fetchGoogleSheetData(csvUrl);
-            if (data.length === 0) throw new Error("ไม่พบข้อมูลใน Google Sheet");
-            const analysis = analyzeData(data);
-            dispatch({ type: "SET_DATA", payload: { data, analysis, fileName: `Google Sheets (Custom)` } });
-        } catch (err) {
-            dispatch({ type: "SET_ERROR", payload: String(err) });
-        }
-    }, [customUrl, dispatch]);
+        const csvUrl = buildGoogleSheetCsvUrl(parsed.sheetId, parsed.gid);
+        activeUrlRef.current = csvUrl;
+        doFetch(csvUrl);
+    }, [customUrl, dispatch, doFetch]);
+
+    // Auto-refresh logic
+    useEffect(() => {
+        if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
+        if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+        if (refreshInterval === 0 || state.surveyData.length === 0) { setCountdown(0); return; }
+        const secs = refreshInterval * 60;
+        setCountdown(secs);
+        countdownTimerRef.current = setInterval(() => {
+            setCountdown((c) => { if (c <= 1) { return secs; } return c - 1; });
+        }, 1000);
+        refreshTimerRef.current = setInterval(() => {
+            doFetch(activeUrlRef.current ?? undefined);
+        }, secs * 1000);
+        return () => {
+            if (refreshTimerRef.current) clearInterval(refreshTimerRef.current);
+            if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+        };
+    }, [refreshInterval, state.surveyData.length, doFetch]);
 
     const handleDrop = useCallback(
         (e: React.DragEvent) => {
@@ -166,6 +198,46 @@ export default function DataSourceSwitcher() {
                                 ดึงข้อมูล Google Sheets
                             </button>
                         </div>
+
+                        {/* Auto-refresh controls — show only when data is loaded */}
+                        {state.surveyData.length > 0 && (
+                            <div className="bg-[var(--color-surface-alt)] rounded-xl p-3 space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-1.5">
+                                        <RefreshCw className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                                        <span className="text-xs font-bold text-[var(--color-text)]">Auto-Refresh</span>
+                                    </div>
+                                    <div className="flex gap-1">
+                                        {REFRESH_OPTIONS.map((opt) => (
+                                            <button
+                                                key={opt.value}
+                                                onClick={() => setRefreshInterval(opt.value)}
+                                                className={`px-2 py-0.5 rounded-lg text-[10px] font-medium transition ${
+                                                    refreshInterval === opt.value
+                                                        ? "bg-[var(--color-primary)] text-white"
+                                                        : "border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-primary)]"
+                                                }`}
+                                            >
+                                                {opt.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between text-[10px] text-[var(--color-text-secondary)]">
+                                    <div className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        {lastUpdated
+                                            ? `อัปเดตล่าสุด: ${lastUpdated.toLocaleTimeString("th-TH")}`
+                                            : "ยังไม่มีการอัปเดต"}
+                                    </div>
+                                    {refreshInterval > 0 && countdown > 0 && (
+                                        <span className="text-[var(--color-primary)] font-medium">
+                                            รีเฟรชใน {Math.floor(countdown / 60)}:{String(countdown % 60).padStart(2, "0")}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Divider */}
                         <div className="flex items-center gap-3">

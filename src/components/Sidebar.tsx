@@ -22,10 +22,11 @@ import {
     Settings2,
     TrendingUp,
     Link2,
+    ShieldAlert,
 } from "lucide-react";
 import { useAppState, ActiveTab } from "@/lib/store";
 import { useTheme } from "@/components/ThemeProvider";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 type NavSection = { section: string; items: { icon: React.ElementType; label: string; tab: ActiveTab; badge?: string }[] };
 
@@ -47,6 +48,7 @@ const navSections: NavSection[] = [
             { icon: Users, label: "Cluster Analysis", tab: "cluster" },
             { icon: GitMerge, label: "Correlation Matrix", tab: "correlation" },
             { icon: AlertTriangle, label: "Anomaly Detection", tab: "anomaly" },
+            { icon: ShieldAlert, label: "Predictive Risk", tab: "risk" },
             { icon: TrendingUp, label: "Benchmark", tab: "benchmark", badge: "Soon" },
         ],
     },
@@ -67,10 +69,36 @@ const navSections: NavSection[] = [
     },
 ];
 
+function useAnomalyCount(): number {
+    const { filteredData } = useAppState();
+    return useMemo(() => {
+        if (filteredData.length < 5) return 0;
+        const means = filteredData.map((r) => {
+            const v = r.factors.filter((x) => x > 0);
+            return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+        }).filter((v) => v > 0);
+        const gm = means.reduce((a, b) => a + b, 0) / means.length;
+        const gs = Math.sqrt(means.reduce((s, v) => s + (v - gm) ** 2, 0) / means.length);
+        if (gs === 0) return 0;
+        const unitMap: Record<string, number[]> = {};
+        filteredData.forEach((r) => {
+            const u = r.demographics.unit || "ไม่ระบุ";
+            const v = r.factors.filter((x) => x > 0);
+            if (v.length) { if (!unitMap[u]) unitMap[u] = []; unitMap[u].push(v.reduce((a, b) => a + b, 0) / v.length); }
+        });
+        return Object.values(unitMap).filter((vals) => {
+            if (vals.length < 3) return false;
+            const um = vals.reduce((a, b) => a + b, 0) / vals.length;
+            return (um - gm) / gs <= -1;
+        }).length;
+    }, [filteredData]);
+}
+
 export default function Sidebar() {
     const { state, dispatch } = useAppState();
     const { theme, toggleTheme } = useTheme();
     const [collapsed, setCollapsed] = useState(false);
+    const anomalyCount = useAnomalyCount();
 
     return (
         <motion.aside
@@ -106,21 +134,31 @@ export default function Sidebar() {
                         {section.items.map((item) => {
                             const isActive = state.activeTab === item.tab;
                             const Icon = item.icon;
+                            const isAnomaly = item.tab === "anomaly";
+                            const showAnomalyBadge = isAnomaly && anomalyCount > 0;
                             return (
                                 <button
                                     key={item.tab}
                                     onClick={() => dispatch({ type: "SET_TAB", payload: item.tab })}
-                                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                                    className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
                                         ${isActive
                                             ? "bg-[var(--color-primary)] text-white shadow-md"
                                             : "text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 hover:text-[var(--color-primary-dark)]"
                                         }`}
                                 >
-                                    <Icon className="w-5 h-5 flex-shrink-0" />
+                                    <div className="relative flex-shrink-0">
+                                        <Icon className="w-5 h-5" />
+                                        {showAnomalyBadge && collapsed && (
+                                            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500" />
+                                        )}
+                                    </div>
                                     {!collapsed && (
                                         <span className="flex-1 text-left">{item.label}</span>
                                     )}
-                                    {!collapsed && item.badge && (
+                                    {!collapsed && showAnomalyBadge && (
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white">{anomalyCount}</span>
+                                    )}
+                                    {!collapsed && !showAnomalyBadge && item.badge && (
                                         <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400">{item.badge}</span>
                                     )}
                                 </button>

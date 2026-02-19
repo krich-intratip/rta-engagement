@@ -30,6 +30,8 @@ import BenchmarkView from "@/components/BenchmarkView";
 import FactorAnalysis from "@/components/FactorAnalysis";
 import EngagementAnalysis from "@/components/EngagementAnalysis";
 import CrossAnalysis from "@/components/CrossAnalysis";
+import PredictiveRisk from "@/components/PredictiveRisk";
+import ReportBuilder from "@/components/ReportBuilder";
 import { useAppState } from "@/lib/store";
 import { useEffect } from "react";
 import Image from "next/image";
@@ -51,6 +53,7 @@ const TAB_NAMES: Record<string, string> = {
     anomaly: "Anomaly Detection",
     surveybuilder: "Survey Builder",
     benchmark: "Benchmark",
+    risk: "Predictive Risk Score",
     about: "เกี่ยวกับ",
 };
 
@@ -221,6 +224,7 @@ function TabContent() {
                         {hasData ? (
                             <>
                                 <FilterPanel />
+                                <ReportBuilder />
                                 <ExecutiveSummary />
                             </>
                         ) : (
@@ -274,6 +278,15 @@ function TabContent() {
                         ) : (
                             <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อตรวจจับความผิดปกติ" />
                         )}
+                    </div>
+                </motion.div>
+            )}
+
+            {state.activeTab === "risk" && (
+                <motion.div key="risk" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <TabHeader tabKey="risk" />
+                    <div id="tab-content-risk" className="space-y-5">
+                        {hasData ? <PredictiveRisk /> : <EmptyState label="กรุณาโหลดข้อมูลก่อนเพื่อดู Predictive Risk Score" />}
                     </div>
                 </motion.div>
             )}
