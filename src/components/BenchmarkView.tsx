@@ -66,7 +66,7 @@ export default function BenchmarkView() {
                             <li>✅ Trend line รายปัจจัยและความผูกพัน</li>
                             <li>✅ เปรียบเทียบ YoY (Year-over-Year) change</li>
                             <li>✅ ระบุปัจจัยที่ดีขึ้น/แย่ลงมากที่สุด</li>
-                            <li>⏳ กำหนดเปิดใช้งาน: v2.2.0</li>
+                            <li>⏳ กำหนดเปิดใช้งาน: ในเวอร์ชั่นถัดไป</li>
                         </ul>
                     </div>
                 </div>
