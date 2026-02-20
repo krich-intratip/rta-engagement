@@ -14,8 +14,8 @@ import { useAppState } from "@/lib/store";
 import ChartModal from "@/components/ChartModal";
 
 function EngagementRadarContent({ height = 350 }: { height?: number }) {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.engagementStats.length === 0) return null;
 
     const chartData = result.engagementStats.map((s) => ({
@@ -64,8 +64,8 @@ function EngagementRadarContent({ height = 350 }: { height?: number }) {
 }
 
 export default function EngagementRadarChart() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.engagementStats.length === 0) return null;
 
     return (

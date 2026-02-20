@@ -28,7 +28,7 @@ const REPORT_SECTIONS: ReportSection[] = [
 ];
 
 export default function ReportBuilder() {
-    const { state, dispatch } = useAppState();
+    const { state, dispatch, filteredAnalysis } = useAppState();
     const [selected, setSelected] = useState<Set<string>>(
         new Set(["overview", "factors2", "engagement2", "executive"])
     );
@@ -37,7 +37,7 @@ export default function ReportBuilder() {
     const [progress, setProgress] = useState(0);
     const [progressLabel, setProgressLabel] = useState("");
 
-    const hasData = state.analysisResult && state.surveyData.length > 0;
+    const hasData = filteredAnalysis && state.surveyData.length > 0;
 
     function toggleSection(id: string) {
         setSelected((prev) => {

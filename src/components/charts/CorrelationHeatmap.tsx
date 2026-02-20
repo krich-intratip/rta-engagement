@@ -17,8 +17,8 @@ const getCorrelationColor = (r: number): string => {
 };
 
 function HeatmapContent() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.correlations.length === 0) return null;
 
     const factorGroups = [...new Set(result.correlations.map((c) => c.groupA))];
@@ -84,8 +84,8 @@ function HeatmapContent() {
 }
 
 export default function CorrelationHeatmap() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.correlations.length === 0) return null;
 
     return (

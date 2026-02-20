@@ -105,8 +105,8 @@ const sectionTabs: { key: SectionKey; label: string }[] = [
 ];
 
 export default function InsightsPanel() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     const [activeSection, setActiveSection] = useState<SectionKey>("all");
 
     if (!result || result.insights.length === 0) return null;

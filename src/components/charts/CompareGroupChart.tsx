@@ -30,8 +30,8 @@ const DEMO_FIELDS = [
 ] as const;
 
 function CompareGroupContent({ selectedField, height = 350 }: { selectedField: string; height?: number }) {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result) return null;
 
     const breakdown = result.demographicBreakdown[selectedField as keyof typeof result.demographicBreakdown];
@@ -76,8 +76,8 @@ function CompareGroupContent({ selectedField, height = 350 }: { selectedField: s
 }
 
 export default function CompareGroupChart() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     const [selectedField, setSelectedField] = useState<string>("byGender");
 
     if (!result) return null;

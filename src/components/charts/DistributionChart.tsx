@@ -25,8 +25,8 @@ const LIKERT_COLORS: Record<string, string> = {
 };
 
 function DistributionContent({ selectedGroup, heightMultiplier = 32 }: { selectedGroup: string; heightMultiplier?: number }) {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis, filteredData } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.totalResponses === 0) return null;
 
     let items = result.itemStats.filter((it) => it.index < 29);
@@ -39,7 +39,7 @@ function DistributionContent({ selectedGroup, heightMultiplier = 32 }: { selecte
     }
 
     const chartData = items.map((it) => {
-        const vals = state.surveyData.map((r) => r.factors[it.index]).filter((v) => v > 0);
+        const vals = filteredData.map((r) => r.factors[it.index]).filter((v) => v > 0);
         const dist: Record<string, number> = {};
         for (let v = 1; v <= 5; v++) {
             const count = vals.filter((x) => x === v).length;
@@ -80,8 +80,8 @@ function DistributionContent({ selectedGroup, heightMultiplier = 32 }: { selecte
 }
 
 export default function DistributionChart() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     const [selectedGroup, setSelectedGroup] = useState<string>("all");
 
     if (!result || result.totalResponses === 0) return null;

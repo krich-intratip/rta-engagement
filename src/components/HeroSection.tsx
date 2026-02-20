@@ -33,8 +33,8 @@ const cardVariants = {
 };
 
 export default function HeroSection() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
 
     if (!result || result.totalResponses === 0) {
         return (

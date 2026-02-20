@@ -9,8 +9,8 @@ import ChartModal from "@/components/ChartModal";
 const COLORS = ["#3B7DD8", "#2ECC71", "#E74C8B", "#9B59B6", "#F39C12", "#F1C40F", "#1ABC9C", "#E74C3C"];
 
 function FactorBarChartContent({ height = 380 }: { height?: number }) {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.factorStats.length === 0) return null;
 
     const chartData = result.factorStats.map((s, i) => ({
@@ -59,8 +59,8 @@ function FactorBarChartContent({ height = 380 }: { height?: number }) {
 }
 
 export default function FactorBarChart() {
-    const { state } = useAppState();
-    const result = state.analysisResult;
+    const { filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     if (!result || result.factorStats.length === 0) return null;
 
     return (

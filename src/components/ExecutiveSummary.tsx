@@ -287,8 +287,8 @@ function InsightCard({ insight, color }: { insight: ActionableInsight; color: st
 }
 
 export default function ExecutiveSummary() {
-    const { state, filteredData } = useAppState();
-    const result = state.analysisResult;
+    const { state, filteredData, filteredAnalysis } = useAppState();
+    const result = filteredAnalysis;
     const printRef = useRef<HTMLDivElement>(null);
     const [exporting, setExporting] = useState(false);
 
@@ -308,6 +308,7 @@ export default function ExecutiveSummary() {
     const recommendations = useMemo(() => generateRecommendations(factorMeans, engMeans), [factorMeans, engMeans]);
 
     if (!result || filteredData.length === 0) return null;
+
 
     const n = filteredData.length;
     const totalN = state.surveyData.length;

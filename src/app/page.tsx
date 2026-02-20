@@ -71,7 +71,7 @@ function TabHeader({ tabKey }: { tabKey: string }) {
 }
 
 function TabContent() {
-    const { state } = useAppState();
+    const { state, filteredAnalysis } = useAppState();
 
     // UX: scroll main to top on tab change
     useEffect(() => {
@@ -79,7 +79,7 @@ function TabContent() {
         if (main) main.scrollTop = 0;
     }, [state.activeTab]);
 
-    const hasData = state.analysisResult && state.analysisResult.totalResponses > 0;
+    const hasData = filteredAnalysis && filteredAnalysis.totalResponses > 0;
 
     return (
         <AnimatePresence mode="wait">

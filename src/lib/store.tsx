@@ -1,7 +1,8 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, ReactNode, useEffect } from "react";
+import React, { createContext, useContext, useReducer, ReactNode, useEffect, useMemo } from "react";
 import { SurveyResponse, AnalysisResult } from "@/types/survey";
+import { analyzeData } from "@/lib/analysis";
 
 export type DataSource = "file" | "google-sheet";
 export type ActiveTab = "overview" | "factors" | "engagement" | "compare" | "raw" | "text" | "executive" | "cluster" | "correlation" | "actionplan" | "anomaly" | "surveybuilder" | "benchmark" | "about" | "factors2" | "engagement2" | "crossanalysis" | "risk" | "path";
@@ -113,6 +114,7 @@ const AppContext = createContext<{
     state: AppState;
     dispatch: React.Dispatch<Action>;
     filteredData: SurveyResponse[];
+    filteredAnalysis: AnalysisResult | null;
 } | null>(null);
 
 /** Apply demographic filters to raw survey data */
@@ -139,6 +141,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const filteredData = applyFilters(state.surveyData, state.filters);
 
+    const filteredAnalysis = useMemo(
+        () => (filteredData.length > 0 ? analyzeData(filteredData) : null),
+        [filteredData]
+    );
+
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -150,7 +157,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }, [state.dataSource, state.activeTab, state.filters]);
 
     return (
-        <AppContext.Provider value={{ state, dispatch, filteredData }}>
+        <AppContext.Provider value={{ state, dispatch, filteredData, filteredAnalysis }}>
             {children}
         </AppContext.Provider>
     );
