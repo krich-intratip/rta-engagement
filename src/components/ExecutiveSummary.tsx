@@ -3,8 +3,8 @@
 import { useRef, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { useAppState } from "@/lib/store";
-import { interpretMean, FACTOR_LABELS, ENGAGEMENT_LABELS, SurveyResponse } from "@/types/survey";
-import { Printer, Download, CheckCircle2, AlertTriangle, Lightbulb, FileText } from "lucide-react";
+import { interpretMean, FACTOR_LABELS, ENGAGEMENT_LABELS, FACTOR_GROUP_INDICES, SurveyResponse } from "@/types/survey";
+import { Printer, Download, CheckCircle2, AlertTriangle, Lightbulb, FileText, GitMerge, ShieldAlert } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from "recharts";
 
 const FACTOR_GROUPS: Record<string, number[]> = {
@@ -75,9 +75,9 @@ function generateStrengths(factorMeans: number[], engMeans: number[]): Actionabl
         if (m >= 4.0 && insights.length < 4) {
             const group = Object.entries(FACTOR_GROUPS).find(([, idxs]) => idxs.includes(i))?.[0] ?? "ปัจจัย";
             insights.push({
-                title: `ปัจจัย "${FACTOR_LABELS[i]}" อยู่ในระดับดี (${m.toFixed(2)}/5.00)`,
+                title: `ปัจจัย "${FACTOR_LABELS[i]}" อยู่ในระดับดี (${m.toFixed(3)}/5.00)`,
                 score: m,
-                context: `กลุ่ม${group} — คะแนน ${m.toFixed(2)} (${interpretMean(m)}) สะท้อนว่ากำลังพลรับรู้ด้านนี้ในเชิงบวกอย่างชัดเจน`,
+                context: `กลุ่ม${group} — คะแนน ${m.toFixed(3)} (${interpretMean(m)}) สะท้อนว่ากำลังพลรับรู้ด้านนี้ในเชิงบวกอย่างชัดเจน`,
                 action: FACTOR_ACTIONS[i] ?? "รักษาและต่อยอดจุดแข็งนี้ต่อเนื่อง",
                 priority: m >= 4.5 ? "สูง" : "กลาง",
                 timeline: "ต่อเนื่อง",
@@ -88,9 +88,9 @@ function generateStrengths(factorMeans: number[], engMeans: number[]): Actionabl
     engMeans.forEach((m, i) => {
         if (m >= 4.0 && insights.length < 5) {
             insights.push({
-                title: `ความผูกพัน "${ENGAGEMENT_LABELS[i]}" อยู่ในระดับดี (${m.toFixed(2)}/5.00)`,
+                title: `ความผูกพัน "${ENGAGEMENT_LABELS[i]}" อยู่ในระดับดี (${m.toFixed(3)}/5.00)`,
                 score: m,
-                context: `คะแนน ${m.toFixed(2)} (${interpretMean(m)}) — กำลังพลมีความผูกพันด้านนี้สูง เป็นรากฐานสำคัญของการรักษากำลังพลระยะยาว`,
+                context: `คะแนน ${m.toFixed(3)} (${interpretMean(m)}) — กำลังพลมีความผูกพันด้านนี้สูง เป็นรากฐานสำคัญของการรักษากำลังพลระยะยาว`,
                 action: ENGAGEMENT_ACTIONS[i] ?? "รักษาระดับและขยายผลสู่กำลังพลกลุ่มอื่น",
                 priority: "กลาง",
                 timeline: "ต่อเนื่อง",
@@ -107,9 +107,9 @@ function generateImprovements(factorMeans: number[], engMeans: number[]): Action
     bottomF.slice(0, 4).forEach(({ m, i }) => {
         const group = Object.entries(FACTOR_GROUPS).find(([, idxs]) => idxs.includes(i))?.[0] ?? "ปัจจัย";
         insights.push({
-            title: `ปัจจัย "${FACTOR_LABELS[i]}" ต้องปรับปรุง (${m.toFixed(2)}/5.00)`,
+            title: `ปัจจัย "${FACTOR_LABELS[i]}" ต้องปรับปรุง (${m.toFixed(3)}/5.00)`,
             score: m,
-            context: `กลุ่ม${group} — คะแนน ${m.toFixed(2)} (${interpretMean(m)}) ต่ำกว่าเกณฑ์ที่ยอมรับได้ สะท้อนความไม่พึงพอใจที่อาจส่งผลต่อประสิทธิภาพการปฏิบัติงาน`,
+            context: `กลุ่ม${group} — คะแนน ${m.toFixed(3)} (${interpretMean(m)}) ต่ำกว่าเกณฑ์ที่ยอมรับได้ สะท้อนความไม่พึงพอใจที่อาจส่งผลต่อประสิทธิภาพการปฏิบัติงาน`,
             action: FACTOR_ACTIONS[i] ?? "วิเคราะห์สาเหตุเชิงลึกและจัดทำแผนปรับปรุงทันที",
             priority: m < 3.0 ? "สูง" : "กลาง",
             timeline: m < 3.0 ? "ภายใน 30 วัน" : "ภายใน 90 วัน",
@@ -119,9 +119,9 @@ function generateImprovements(factorMeans: number[], engMeans: number[]): Action
     const bottomE = engMeans.map((m, i) => ({ m, i })).filter((x) => x.m > 0 && x.m < 3.8).sort((a, b) => a.m - b.m);
     bottomE.slice(0, 2).forEach(({ m, i }) => {
         insights.push({
-            title: `ความผูกพัน "${ENGAGEMENT_LABELS[i]}" ต้องเสริมสร้าง (${m.toFixed(2)}/5.00)`,
+            title: `ความผูกพัน "${ENGAGEMENT_LABELS[i]}" ต้องเสริมสร้าง (${m.toFixed(3)}/5.00)`,
             score: m,
-            context: `คะแนน ${m.toFixed(2)} (${interpretMean(m)}) — ความผูกพันด้านนี้ต่ำกว่าเกณฑ์ อาจนำไปสู่การโอนย้ายหรือลดประสิทธิภาพในระยะยาว`,
+            context: `คะแนน ${m.toFixed(3)} (${interpretMean(m)}) — ความผูกพันด้านนี้ต่ำกว่าเกณฑ์ อาจนำไปสู่การโอนย้ายหรือลดประสิทธิภาพในระยะยาว`,
             action: ENGAGEMENT_ACTIONS[i] ?? "สำรวจเชิงลึกและจัดทำแผนเสริมสร้างความผูกพัน",
             priority: "สูง",
             timeline: "ภายใน 60 วัน",
@@ -131,9 +131,9 @@ function generateImprovements(factorMeans: number[], engMeans: number[]): Action
     if (insights.length === 0) {
         factorMeans.map((m, i) => ({ m, i })).filter((x) => x.m > 0).sort((a, b) => a.m - b.m).slice(0, 3).forEach(({ m, i }) => {
             insights.push({
-                title: `ปัจจัย "${FACTOR_LABELS[i]}" มีโอกาสพัฒนา (${m.toFixed(2)}/5.00)`,
+                title: `ปัจจัย "${FACTOR_LABELS[i]}" มีโอกาสพัฒนา (${m.toFixed(3)}/5.00)`,
                 score: m,
-                context: `คะแนน ${m.toFixed(2)} (${interpretMean(m)}) — แม้อยู่ในเกณฑ์ยอมรับได้ แต่ยังมีช่องว่างสำหรับการพัฒนาสู่ความเป็นเลิศ`,
+                context: `คะแนน ${m.toFixed(3)} (${interpretMean(m)}) — แม้อยู่ในเกณฑ์ยอมรับได้ แต่ยังมีช่องว่างสำหรับการพัฒนาสู่ความเป็นเลิศ`,
                 action: FACTOR_ACTIONS[i] ?? "วางแผนพัฒนาต่อเนื่องเพื่อยกระดับคะแนน",
                 priority: "ต่ำ",
                 timeline: "ภายใน 6 เดือน",
@@ -162,7 +162,7 @@ function generateRecommendations(factorMeans: number[], engMeans: number[]): Act
     if (weakest) {
         const worstIdx = weakest.idxs.reduce((best, i) => factorMeans[i] < factorMeans[best] ? i : best, weakest.idxs[0]);
         recs.push({
-            title: `เร่งพัฒนากลุ่ม "${weakest.name}" ซึ่งเป็นจุดอ่อนหลัก (${weakest.avg.toFixed(2)}/5.00)`,
+            title: `เร่งพัฒนากลุ่ม "${weakest.name}" ซึ่งเป็นจุดอ่อนหลัก (${weakest.avg.toFixed(3)}/5.00)`,
             score: weakest.avg,
             context: `กลุ่ม "${weakest.name}" มีคะแนนเฉลี่ยต่ำที่สุด ครอบคลุม ${weakest.idxs.length} ข้อ ได้แก่ ${weakest.idxs.map((i) => FACTOR_LABELS[i]).join(", ")}`,
             action: `จัดทำแผนปฏิบัติการเร่งด่วน: ${FACTOR_ACTIONS[worstIdx] ?? "วิเคราะห์สาเหตุและจัดทำแผนปรับปรุงทันที"} พร้อมกำหนดผู้รับผิดชอบและตัวชี้วัดที่ชัดเจน`,
@@ -174,7 +174,7 @@ function generateRecommendations(factorMeans: number[], engMeans: number[]): Act
 
     if (strongest && strongest.avg >= 4.0) {
         recs.push({
-            title: `ต่อยอดจุดแข็ง "${strongest.name}" สู่การเป็นต้นแบบ (${strongest.avg.toFixed(2)}/5.00)`,
+            title: `ต่อยอดจุดแข็ง "${strongest.name}" สู่การเป็นต้นแบบ (${strongest.avg.toFixed(3)}/5.00)`,
             score: strongest.avg,
             context: `กลุ่ม "${strongest.name}" มีคะแนนสูงสุด สะท้อนว่าหน่วยมีความเข้มแข็งด้านนี้อย่างชัดเจน`,
             action: "จัดทำ Best Practice และเผยแพร่สู่หน่วยอื่น จัดเวทีแลกเปลี่ยนประสบการณ์ระหว่างหน่วย และบันทึกเป็นองค์ความรู้ขององค์กร",
@@ -186,9 +186,9 @@ function generateRecommendations(factorMeans: number[], engMeans: number[]): Act
 
     if (overallEng < 3.8) {
         recs.push({
-            title: `เสริมสร้างความผูกพันองค์กรอย่างเป็นระบบ (ปัจจุบัน ${overallEng.toFixed(2)}/5.00)`,
+            title: `เสริมสร้างความผูกพันองค์กรอย่างเป็นระบบ (ปัจจุบัน ${overallEng.toFixed(3)}/5.00)`,
             score: overallEng,
-            context: `คะแนนความผูกพันโดยรวม ${overallEng.toFixed(2)} (${interpretMean(overallEng)}) ยังต่ำกว่าเป้าหมาย 4.00 อาจส่งผลต่อการรักษากำลังพลและประสิทธิภาพในระยะยาว`,
+            context: `คะแนนความผูกพันโดยรวม ${overallEng.toFixed(3)} (${interpretMean(overallEng)}) ยังต่ำกว่าเป้าหมาย 4.00 อาจส่งผลต่อการรักษากำลังพลและประสิทธิภาพในระยะยาว`,
             action: "จัดทำโปรแกรม Employee Engagement แบบครบวงจร: (1) Pulse Survey รายไตรมาส (2) Team Building ระดับหน่วย (3) กำหนด Engagement Champion ในแต่ละสังกัด (4) ติดตามผลด้วย Dashboard แบบ Real-time",
             priority: "สูง",
             timeline: "ภายใน 3–6 เดือน",
@@ -196,9 +196,9 @@ function generateRecommendations(factorMeans: number[], engMeans: number[]): Act
         });
     } else {
         recs.push({
-            title: `ยกระดับความผูกพันสู่ระดับ 'ดีมาก' อย่างยั่งยืน (ปัจจุบัน ${overallEng.toFixed(2)}/5.00)`,
+            title: `ยกระดับความผูกพันสู่ระดับ 'ดีมาก' อย่างยั่งยืน (ปัจจุบัน ${overallEng.toFixed(3)}/5.00)`,
             score: overallEng,
-            context: `คะแนนความผูกพันโดยรวม ${overallEng.toFixed(2)} (${interpretMean(overallEng)}) อยู่ในเกณฑ์ดี แต่ยังมีโอกาสยกระดับสู่ความเป็นเลิศ (≥ 4.50)`,
+            context: `คะแนนความผูกพันโดยรวม ${overallEng.toFixed(3)} (${interpretMean(overallEng)}) อยู่ในเกณฑ์ดี แต่ยังมีโอกาสยกระดับสู่ความเป็นเลิศ (≥ 4.50)`,
             action: "ดำเนินโครงการ Excellence Program: (1) ระบุกำลังพลที่มีความผูกพันสูงเป็น Ambassador (2) จัดโปรแกรมพัฒนาพิเศษสำหรับกลุ่มที่มีศักยภาพ (3) สร้างวัฒนธรรมองค์กรที่ส่งเสริมความผูกพันระยะยาว",
             priority: "กลาง",
             timeline: "ภายใน 6 เดือน",
@@ -209,9 +209,9 @@ function generateRecommendations(factorMeans: number[], engMeans: number[]): Act
     const gap = overallFactor - overallEng;
     if (gap > 0.3) {
         recs.push({
-            title: `แปลงปัจจัยที่ดีให้เป็นความผูกพันที่สูงขึ้น (ช่องว่าง ${gap.toFixed(2)} คะแนน)`,
+            title: `แปลงปัจจัยที่ดีให้เป็นความผูกพันที่สูงขึ้น (ช่องว่าง ${gap.toFixed(3)} คะแนน)`,
             score: overallFactor,
-            context: `ปัจจัยด้านงาน (${overallFactor.toFixed(2)}) สูงกว่าความผูกพัน (${overallEng.toFixed(2)}) สะท้อนว่าสภาพแวดล้อมดี แต่ยังไม่แปลงเป็นความผูกพันได้เต็มที่`,
+            context: `ปัจจัยด้านงาน (${overallFactor.toFixed(3)}) สูงกว่าความผูกพัน (${overallEng.toFixed(3)}) สะท้อนว่าสภาพแวดล้อมดี แต่ยังไม่แปลงเป็นความผูกพันได้เต็มที่`,
             action: "สร้างการเชื่อมโยงระหว่างปัจจัยที่ดีกับความรู้สึกผูกพัน: จัดกิจกรรมสร้างความหมายในงาน (Meaning at Work) สื่อสารให้กำลังพลเห็นคุณค่าของงานต่อภารกิจใหญ่ขององค์กร",
             priority: "กลาง",
             timeline: "ภายใน 3 เดือน",
@@ -240,7 +240,7 @@ function ScoreBar({ score, max = 5 }: { score: number; max?: number }) {
             <div className="flex-1 h-2 bg-[var(--color-surface-alt)] rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: color }} />
             </div>
-            <span className="text-xs font-bold w-8 text-right" style={{ color }}>{score.toFixed(2)}</span>
+            <span className="text-xs font-bold w-10 text-right" style={{ color }}>{score.toFixed(3)}</span>
         </div>
     );
 }
@@ -425,9 +425,9 @@ ${printRef.current.innerHTML}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                         { label: "ผู้ตอบแบบสอบถาม", value: n.toLocaleString(), unit: "คน", color: "text-[var(--color-primary)]" },
-                        { label: "คะแนนปัจจัยเฉลี่ย", value: overallFactor.toFixed(2), unit: `/ 5.00 · ${interpretMean(overallFactor)}`, color: overallFactor >= 4 ? "text-emerald-600" : "text-yellow-600" },
-                        { label: "คะแนนผูกพันเฉลี่ย", value: overallEng.toFixed(2), unit: `/ 5.00 · ${interpretMean(overallEng)}`, color: overallEng >= 4 ? "text-emerald-600" : "text-yellow-600" },
-                        { label: "ปัจจัยสูงสุด", value: top5Factors[0]?.mean.toFixed(2) ?? "-", unit: top5Factors[0]?.label ?? "", color: "text-emerald-600" },
+                        { label: "คะแนนปัจจัยเฉลี่ย", value: overallFactor.toFixed(3), unit: `/ 5.00 · ${interpretMean(overallFactor)}`, color: overallFactor >= 4 ? "text-emerald-600" : "text-yellow-600" },
+                        { label: "คะแนนผูกพันเฉลี่ย", value: overallEng.toFixed(3), unit: `/ 5.00 · ${interpretMean(overallEng)}`, color: overallEng >= 4 ? "text-emerald-600" : "text-yellow-600" },
+                        { label: "ปัจจัยสูงสุด", value: top5Factors[0]?.mean.toFixed(3) ?? "-", unit: top5Factors[0]?.label ?? "", color: "text-emerald-600" },
                     ].map((kpi, i) => (
                         <div key={i} className="glass-card p-4 text-center print:border print:border-gray-200">
                             <p className="text-xs text-[var(--color-text-secondary)] mb-1">{kpi.label}</p>
@@ -585,9 +585,185 @@ ${printRef.current.innerHTML}
                     </div>
                 </div>
 
+                {/* Path Analysis & Predictive Risk Insights */}
+                {(() => {
+                    // ── Pearson correlation helper ──────────────────────────
+                    function pearson(xs: number[], ys: number[]): number {
+                        const nn = xs.length;
+                        if (nn < 3) return 0;
+                        const mx = xs.reduce((a, b) => a + b, 0) / nn;
+                        const my = ys.reduce((a, b) => a + b, 0) / nn;
+                        const num = xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0);
+                        const dx = Math.sqrt(xs.reduce((s, x) => s + (x - mx) ** 2, 0));
+                        const dy = Math.sqrt(ys.reduce((s, y) => s + (y - my) ** 2, 0));
+                        return dx && dy ? num / (dx * dy) : 0;
+                    }
+
+                    // ── Path Analysis: factor group → engagement correlation ─
+                    const groupNames = Object.keys(FACTOR_GROUP_INDICES);
+                    const personEngScores = filteredData.map((r) => {
+                        const v = r.engagement.filter((x) => x > 0);
+                        return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+                    });
+                    const groupCorrelations = groupNames.map((gName) => {
+                        const idxs = FACTOR_GROUP_INDICES[gName as keyof typeof FACTOR_GROUP_INDICES];
+                        const groupScoresArr = filteredData.map((r) => {
+                            const v = idxs.map((i) => r.factors[i]).filter((x) => x > 0);
+                            return v.length ? v.reduce((a, b) => a + b, 0) / v.length : 0;
+                        });
+                        const pairs = groupScoresArr.map((x, i) => ({ x, y: personEngScores[i] })).filter((p) => p.x > 0 && p.y > 0);
+                        const r = pearson(pairs.map((p) => p.x), pairs.map((p) => p.y));
+                        const groupMean = pairs.length ? pairs.reduce((s, p) => s + p.x, 0) / pairs.length : 0;
+                        return { name: gName, r: Math.round(r * 1000) / 1000, mean: Math.round(groupMean * 1000) / 1000 };
+                    }).filter((g) => g.r > 0).sort((a, b) => b.r - a.r);
+
+                    const top3Path = groupCorrelations.slice(0, 3);
+                    const bottom1Path = [...groupCorrelations].sort((a, b) => a.mean - b.mean)[0];
+
+                    // ── Predictive Risk: simplified risk score ──────────────
+                    const itemWeights = FACTOR_LABELS.map((_, i) => {
+                        const pairs = filteredData.map((r, j) => ({ x: r.factors[i], y: personEngScores[j] })).filter((p) => p.x > 0 && p.y > 0);
+                        return Math.max(0, pearson(pairs.map((p) => p.x), pairs.map((p) => p.y)));
+                    });
+                    const totalWeight = itemWeights.reduce((a, b) => a + b, 0) || 1;
+                    const personRisks = filteredData.map((r) => {
+                        let wRisk = 0, usedW = 0;
+                        r.factors.forEach((v, i) => {
+                            if (v > 0 && itemWeights[i] > 0) { wRisk += itemWeights[i] * (5 - v) / 4; usedW += itemWeights[i]; }
+                        });
+                        const baseRisk = usedW > 0 ? wRisk / usedW : 0;
+                        const engV = r.engagement.filter((x) => x > 0);
+                        const engScore = engV.length ? engV.reduce((a, b) => a + b, 0) / engV.length : 0;
+                        const engPenalty = engScore > 0 && engScore < 3.5 ? 0.15 : 0;
+                        return Math.min(1, baseRisk + engPenalty);
+                    });
+                    const highRisk = personRisks.filter((s) => s >= 0.6).length;
+                    const medRisk = personRisks.filter((s) => s >= 0.35 && s < 0.6).length;
+                    const highRiskPct = filteredData.length > 0 ? Math.round((highRisk / filteredData.length) * 100) : 0;
+
+                    // weakest group among high-risk people
+                    const highRiskPeople = filteredData.filter((_, i) => personRisks[i] >= 0.6);
+                    const groupWeakCounts: Record<string, number> = {};
+                    highRiskPeople.forEach((r) => {
+                        let minScore = 999, minGroup = "";
+                        groupNames.forEach((gName) => {
+                            const idxs = FACTOR_GROUP_INDICES[gName as keyof typeof FACTOR_GROUP_INDICES];
+                            const v = idxs.map((i) => r.factors[i]).filter((x) => x > 0);
+                            const avg = v.length ? v.reduce((a, b) => a + b, 0) / v.length : 999;
+                            if (avg < minScore) { minScore = avg; minGroup = gName; }
+                        });
+                        if (minGroup) groupWeakCounts[minGroup] = (groupWeakCounts[minGroup] ?? 0) + 1;
+                    });
+                    const topWeakGroup = Object.entries(groupWeakCounts).sort((a, b) => b[1] - a[1])[0];
+
+                    if (top3Path.length === 0 && highRisk === 0) return null;
+
+                    return (
+                        <div className="space-y-4">
+                            {/* Path Analysis */}
+                            <div>
+                                <h3 className="text-sm font-bold mb-3 flex items-center gap-2 text-violet-600 dark:text-violet-400">
+                                    <GitMerge className="w-4 h-4" /> ข้อเสนอแนะจาก Path Analysis — ปัจจัยที่มีอิทธิพลสูงสุดต่อความผูกพัน
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {top3Path.map((g, i) => (
+                                        <div key={i} className="glass-card p-4 border-l-4 border-violet-400 space-y-2 print:border print:border-gray-200">
+                                            <p className="text-sm font-bold text-[var(--color-text)]">
+                                                {i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉"} กลุ่ม &quot;{g.name}&quot; — อิทธิพลต่อความผูกพัน r = {g.r.toFixed(3)}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400 font-bold">
+                                                    ความเร่งด่วน: {i === 0 ? "สูง" : "กลาง"}
+                                                </span>
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">
+                                                    ⏱ {i === 0 ? "ภายใน 30–60 วัน" : "ภายใน 90 วัน"}
+                                                </span>
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">
+                                                    คะแนนปัจจุบัน {g.mean.toFixed(3)}/5.00
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide mb-0.5">บริบท</p>
+                                                <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                                                    กลุ่ม &quot;{g.name}&quot; มีความสัมพันธ์กับความผูกพันสูง (r = {g.r.toFixed(3)}) — การลงทุนพัฒนากลุ่มนี้จะให้ผลตอบแทนต่อความผูกพันสูงสุด
+                                                    {i === 0 && bottom1Path && bottom1Path.name !== g.name ? ` เปรียบเทียบกับกลุ่ม "${bottom1Path.name}" ที่มีคะแนนต่ำสุด (${bottom1Path.mean.toFixed(3)}) ซึ่งควรเร่งแก้ไขควบคู่กัน` : ""}
+                                                </p>
+                                            </div>
+                                            <div className="bg-violet-50/50 dark:bg-violet-900/10 rounded-lg p-2.5">
+                                                <p className="text-[11px] font-semibold text-violet-700 dark:text-violet-400 uppercase tracking-wide mb-0.5">แนวทางปฏิบัติ</p>
+                                                <p className="text-xs text-[var(--color-text)] leading-relaxed">
+                                                    {i === 0
+                                                        ? `จัดทำแผนพัฒนา "${g.name}" เป็นลำดับแรก เนื่องจากมีอิทธิพลสูงสุดต่อความผูกพัน — กำหนด KPI รายไตรมาสและมอบหมายผู้รับผิดชอบชัดเจน`
+                                                        : `พัฒนา "${g.name}" ควบคู่กับกลุ่มอันดับ 1 เพื่อเสริมผลลัพธ์ความผูกพันให้ครอบคลุมหลายมิติ`}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Predictive Risk */}
+                            <div>
+                                <h3 className="text-sm font-bold mb-3 flex items-center gap-2 text-rose-600 dark:text-rose-400">
+                                    <ShieldAlert className="w-4 h-4" /> ข้อเสนอแนะจาก Predictive Risk — การป้องกันความเสี่ยงเชิงรุก
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div className="glass-card p-4 border-l-4 border-rose-400 space-y-2 print:border print:border-gray-200">
+                                        <p className="text-sm font-bold text-[var(--color-text)]">
+                                            ⚠️ กำลังพลเสี่ยงสูง {highRisk.toLocaleString()} คน ({highRiskPct}%) ต้องดูแลเร่งด่วน
+                                        </p>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-bold">ความเร่งด่วน: {highRiskPct >= 20 ? "สูง" : "กลาง"}</span>
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">⏱ ภายใน 30 วัน</span>
+                                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">เสี่ยงปานกลาง {medRisk.toLocaleString()} คน</span>
+                                        </div>
+                                        <div>
+                                            <p className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide mb-0.5">บริบท</p>
+                                            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                                                จากการวิเคราะห์ Predictive Risk Score พบกำลังพลเสี่ยงสูง {highRisk.toLocaleString()} คน ({highRiskPct}%) และเสี่ยงปานกลาง {medRisk.toLocaleString()} คน
+                                                {topWeakGroup ? ` — กลุ่มปัจจัยที่อ่อนแอที่สุดในกลุ่มเสี่ยงสูงคือ "${topWeakGroup[0]}" (${topWeakGroup[1]} คน)` : ""}
+                                            </p>
+                                        </div>
+                                        <div className="bg-rose-50/50 dark:bg-rose-900/10 rounded-lg p-2.5">
+                                            <p className="text-[11px] font-semibold text-rose-700 dark:text-rose-400 uppercase tracking-wide mb-0.5">แนวทางปฏิบัติ</p>
+                                            <p className="text-xs text-[var(--color-text)] leading-relaxed">
+                                                จัดทำโปรแกรม Early Intervention: (1) สัมภาษณ์เชิงลึกกำลังพลเสี่ยงสูงรายบุคคล (2) มอบหมายผู้บังคับบัญชาโดยตรงเป็น Case Manager (3) ติดตามผลทุก 30 วัน (4) ปรับภาระงานและสวัสดิการตามความต้องการจริง
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {topWeakGroup && (
+                                        <div className="glass-card p-4 border-l-4 border-orange-400 space-y-2 print:border print:border-gray-200">
+                                            <p className="text-sm font-bold text-[var(--color-text)]">
+                                                🎯 จุดอ่อนหลักของกลุ่มเสี่ยง: &quot;{topWeakGroup[0]}&quot; ({topWeakGroup[1]} คน)
+                                            </p>
+                                            <div className="flex flex-wrap gap-1.5">
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 font-bold">ความเร่งด่วน: สูง</span>
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">⏱ ภายใน 60 วัน</span>
+                                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-[var(--color-surface-alt)] text-[var(--color-text-secondary)]">👤 ผู้บังคับบัญชาและฝ่ายกำลังพล</span>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-semibold text-[var(--color-text-secondary)] uppercase tracking-wide mb-0.5">บริบท</p>
+                                                <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
+                                                    กลุ่ม &quot;{topWeakGroup[0]}&quot; เป็นจุดอ่อนที่พบบ่อยที่สุดในกำลังพลกลุ่มเสี่ยงสูง — การแก้ไขจุดนี้จะช่วยลดความเสี่ยงได้อย่างมีประสิทธิภาพสูงสุด
+                                                </p>
+                                            </div>
+                                            <div className="bg-orange-50/50 dark:bg-orange-900/10 rounded-lg p-2.5">
+                                                <p className="text-[11px] font-semibold text-orange-700 dark:text-orange-400 uppercase tracking-wide mb-0.5">แนวทางปฏิบัติ</p>
+                                                <p className="text-xs text-[var(--color-text)] leading-relaxed">
+                                                    เร่งพัฒนากลุ่ม &quot;{topWeakGroup[0]}&quot; สำหรับกำลังพลกลุ่มเสี่ยงโดยเฉพาะ: จัดโปรแกรมพัฒนาเฉพาะกลุ่ม กำหนดเป้าหมายยกระดับคะแนนภายใน 3 เดือน และติดตามผลด้วย Dashboard รายบุคคล
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })()}
+
                 {/* Footer */}
                 <div className="text-center text-xs text-[var(--color-text-light)] py-2">
-                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.7</p>
+                    <p>จัดทำโดย RTA Engagement & Happiness Analysis System v2.1.11</p>
                     <p className="mt-0.5">© 2026 พล.ท.ดร.กริช อินทราทิพย์ — ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ ไม่ส่งข้อมูลออกภายนอก</p>
                 </div>
             </div>

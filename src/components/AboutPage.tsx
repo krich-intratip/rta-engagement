@@ -435,6 +435,12 @@ function FeaturesContent() {
             desc: "กราฟเปรียบเทียบคะแนนตามกลุ่ม และกราฟสัดส่วนตามข้อมูลประชากร ในแท็บ 'เปรียบเทียบ' ตอนนี้ sync การเลือกกลุ่มร่วมกัน — กดปุ่มเลือกกลุ่มในกราฟใดกราฟหนึ่ง กราฟอีกอันจะเปลี่ยนตามทันที",
             gradient: "bg-gradient-lavender",
         },
+        {
+            icon: GitMerge,
+            title: "Path & Risk Insights in Executive Summary (v2.1.11)",
+            desc: "บทสรุปผู้บริหารตอนนี้รวมข้อเสนอแนะจาก Path Analysis (ปัจจัยที่มีอิทธิพลสูงสุดต่อความผูกพัน พร้อม r-value) และ Predictive Risk (จำนวนกำลังพลเสี่ยงสูง/กลาง จุดอ่อนหลักของกลุ่มเสี่ยง) พร้อมปรับทศนิยมทุกตัวเลขคะแนนเป็น 3 ตำแหน่ง",
+            gradient: "bg-gradient-accent",
+        },
     ];
 
     return (
@@ -481,7 +487,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.10
+                    Version 2.1.11
                 </div>
             </motion.div>
 
@@ -525,11 +531,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.10</p>
+                        <p className="font-bold">2.1.11</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">21 กุมภาพันธ์ 2569 (v2.1.10)</p>
+                        <p className="font-bold">21 กุมภาพันธ์ 2569 (v2.1.11)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
