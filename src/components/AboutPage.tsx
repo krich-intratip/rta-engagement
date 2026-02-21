@@ -429,6 +429,12 @@ function FeaturesContent() {
             desc: "แสดงคะแนนเฉลี่ยปัจจัยและความผูกพันเป็นทศนิยม 3 ตำแหน่ง (เช่น 4.142) เพื่อให้เห็นการเปลี่ยนแปลงของข้อมูลได้ชัดเจนขึ้น พร้อม memoize filteredData ใน store เพื่อป้องกัน unnecessary re-computation ทุกครั้งที่ render",
             gradient: "bg-gradient-secondary",
         },
+        {
+            icon: Users,
+            title: "Synced Chart Group Selection (v2.1.10)",
+            desc: "กราฟเปรียบเทียบคะแนนตามกลุ่ม และกราฟสัดส่วนตามข้อมูลประชากร ในแท็บ 'เปรียบเทียบ' ตอนนี้ sync การเลือกกลุ่มร่วมกัน — กดปุ่มเลือกกลุ่มในกราฟใดกราฟหนึ่ง กราฟอีกอันจะเปลี่ยนตามทันที",
+            gradient: "bg-gradient-lavender",
+        },
     ];
 
     return (
@@ -475,7 +481,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.9
+                    Version 2.1.10
                 </div>
             </motion.div>
 
@@ -519,11 +525,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.9</p>
+                        <p className="font-bold">2.1.10</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">21 กุมภาพันธ์ 2569 (v2.1.9)</p>
+                        <p className="font-bold">21 กุมภาพันธ์ 2569 (v2.1.10)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -543,7 +549,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.9</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.10</p>
             </motion.div>
         </div>
     );

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { useAppState } from "@/lib/store";
-import { useState } from "react";
 import ChartModal from "@/components/ChartModal";
 
 const COLORS = ["#3B7DD8", "#2ECC71", "#E74C8B", "#9B59B6", "#F39C12", "#F1C40F", "#1ABC9C", "#E74C3C", "#3498DB", "#E67E22"];
@@ -76,10 +75,14 @@ function DemographicPieContent({ selectedField, height = 300 }: { selectedField:
     );
 }
 
-export default function DemographicPieChart() {
+interface DemographicPieChartProps {
+    selectedField: string;
+    onFieldChange: (field: string) => void;
+}
+
+export default function DemographicPieChart({ selectedField, onFieldChange }: DemographicPieChartProps) {
     const { filteredAnalysis } = useAppState();
     const result = filteredAnalysis;
-    const [selectedField, setSelectedField] = useState<string>("byGender");
 
     if (!result) return null;
 
@@ -100,7 +103,7 @@ export default function DemographicPieChart() {
                     {DEMO_FIELDS.map((f) => (
                         <button
                             key={f.key}
-                            onClick={() => setSelectedField(f.key)}
+                            onClick={() => onFieldChange(f.key)}
                             className={`tab-btn text-xs ${selectedField === f.key ? "active" : ""}`}
                         >
                             {f.label}

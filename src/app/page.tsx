@@ -34,7 +34,7 @@ import PredictiveRisk from "@/components/PredictiveRisk";
 import ReportBuilder from "@/components/ReportBuilder";
 import PathAnalysis from "@/components/PathAnalysis";
 import { useAppState } from "@/lib/store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const TAB_NAMES: Record<string, string> = {
@@ -72,6 +72,8 @@ function TabHeader({ tabKey }: { tabKey: string }) {
 
 function TabContent() {
     const { state, filteredAnalysis } = useAppState();
+    const [compareDemoField, setCompareDemoField] = useState<string>("byGender");
+    const [overviewDemoField, setOverviewDemoField] = useState<string>("byGender");
 
     // UX: scroll main to top on tab change
     useEffect(() => {
@@ -97,7 +99,7 @@ function TabContent() {
                                     <EngagementRadarChart />
                                 </div>
                                 <InsightsPanel />
-                                <DemographicPieChart />
+                                <DemographicPieChart selectedField={overviewDemoField} onFieldChange={setOverviewDemoField} />
                             </>
                         )}
                     </div>
@@ -175,8 +177,8 @@ function TabContent() {
                         {hasData ? (
                             <>
                                 <FilterPanel />
-                                <CompareGroupChart />
-                                <DemographicPieChart />
+                                <CompareGroupChart selectedField={compareDemoField} onFieldChange={setCompareDemoField} />
+                                <DemographicPieChart selectedField={compareDemoField} onFieldChange={setCompareDemoField} />
                                 <CrossTabulation />
                                 <StatisticalSignificance />
                             </>

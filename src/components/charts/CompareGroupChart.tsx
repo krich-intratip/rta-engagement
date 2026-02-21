@@ -12,7 +12,6 @@ import {
     Legend,
 } from "recharts";
 import { useAppState } from "@/lib/store";
-import { useState } from "react";
 import ChartModal from "@/components/ChartModal";
 
 const DEMO_FIELDS = [
@@ -75,10 +74,14 @@ function CompareGroupContent({ selectedField, height = 350 }: { selectedField: s
     );
 }
 
-export default function CompareGroupChart() {
+interface CompareGroupChartProps {
+    selectedField: string;
+    onFieldChange: (field: string) => void;
+}
+
+export default function CompareGroupChart({ selectedField, onFieldChange }: CompareGroupChartProps) {
     const { filteredAnalysis } = useAppState();
     const result = filteredAnalysis;
-    const [selectedField, setSelectedField] = useState<string>("byGender");
 
     if (!result) return null;
 
@@ -99,7 +102,7 @@ export default function CompareGroupChart() {
                     {DEMO_FIELDS.map((f) => (
                         <button
                             key={f.key}
-                            onClick={() => setSelectedField(f.key)}
+                            onClick={() => onFieldChange(f.key)}
                             className={`tab-btn text-xs ${selectedField === f.key ? "active" : ""}`}
                         >
                             {f.label}
