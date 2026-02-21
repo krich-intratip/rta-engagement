@@ -119,14 +119,14 @@ export default function FactorAnalysis() {
         Object.entries(FACTOR_GROUP_INDICES).map(([groupName, indices]) => {
             const vals = indices.map((i) => itemMeans[i]).filter((v) => v > 0);
             const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-            return { groupName, mean: Math.round(mean * 100) / 100, indices };
+            return { groupName, mean: Math.round(mean * 1000) / 1000, indices };
         }),
         [itemMeans]
     );
 
     const overallMean = useMemo(() => {
         const all = itemMeans.filter((v) => v > 0);
-        return all.length ? Math.round((all.reduce((a, b) => a + b, 0) / all.length) * 100) / 100 : 0;
+        return all.length ? Math.round((all.reduce((a, b) => a + b, 0) / all.length) * 1000) / 1000 : 0;
     }, [itemMeans]);
 
     const radarData = groupStats.map((g) => ({
@@ -190,7 +190,7 @@ export default function FactorAnalysis() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)] text-center">
                         <p className="text-xs text-[var(--color-text-secondary)]">คะแนนเฉลี่ยรวม</p>
-                        <p className="text-2xl font-extrabold" style={{ color: SCORE_COLOR(overallMean) }}>{overallMean.toFixed(2)}</p>
+                        <p className="text-2xl font-extrabold" style={{ color: SCORE_COLOR(overallMean) }}>{overallMean.toFixed(3)}</p>
                         <RatingBadge score={overallMean} />
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)] text-center">
@@ -199,7 +199,7 @@ export default function FactorAnalysis() {
                             {[...groupStats].sort((a, b) => b.mean - a.mean)[0]?.groupName.split("ใน")[0].split("กับ")[0].split("และ")[0] ?? "-"}
                         </p>
                         <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">
-                            {[...groupStats].sort((a, b) => b.mean - a.mean)[0]?.mean.toFixed(2)}
+                            {[...groupStats].sort((a, b) => b.mean - a.mean)[0]?.mean.toFixed(3)}
                         </p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)] text-center">
@@ -208,7 +208,7 @@ export default function FactorAnalysis() {
                             {[...groupStats].sort((a, b) => a.mean - b.mean)[0]?.groupName.split("ใน")[0].split("กับ")[0].split("และ")[0] ?? "-"}
                         </p>
                         <p className="text-lg font-extrabold text-red-500">
-                            {[...groupStats].sort((a, b) => a.mean - b.mean)[0]?.mean.toFixed(2)}
+                            {[...groupStats].sort((a, b) => a.mean - b.mean)[0]?.mean.toFixed(3)}
                         </p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)] text-center">

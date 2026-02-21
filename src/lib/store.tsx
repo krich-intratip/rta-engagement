@@ -139,7 +139,10 @@ export function applyFilters(data: SurveyResponse[], filters: DemographicFilters
 export function AppProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const filteredData = applyFilters(state.surveyData, state.filters);
+    const filteredData = useMemo(
+        () => applyFilters(state.surveyData, state.filters),
+        [state.surveyData, state.filters]
+    );
 
     const filteredAnalysis = useMemo(
         () => (filteredData.length > 0 ? analyzeData(filteredData) : null),
