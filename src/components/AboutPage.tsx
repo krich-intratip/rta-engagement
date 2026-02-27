@@ -441,6 +441,12 @@ function FeaturesContent() {
             desc: "บทสรุปผู้บริหารตอนนี้รวมข้อเสนอแนะจาก Path Analysis (ปัจจัยที่มีอิทธิพลสูงสุดต่อความผูกพัน พร้อม r-value) และ Predictive Risk (จำนวนกำลังพลเสี่ยงสูง/กลาง จุดอ่อนหลักของกลุ่มเสี่ยง) พร้อมปรับทศนิยมทุกตัวเลขคะแนนเป็น 3 ตำแหน่ง",
             gradient: "bg-gradient-accent",
         },
+        {
+            icon: FileText,
+            title: "Thai PDF Export Fix (v2.1.12)",
+            desc: "แก้ไขปัญหาภาษาไทยไม่แสดงผลใน PDF Export โดยเปลี่ยนการ render หน้าปกและ section header ใน Report Builder จาก jsPDF text (ไม่รองรับ Unicode) เป็น html2canvas แทน ทำให้ภาษาไทยแสดงผลถูกต้องครบทุกหน้า",
+            gradient: "bg-gradient-primary",
+        },
     ];
 
     return (
@@ -487,7 +493,7 @@ function AboutContent() {
                     ระบบวิเคราะห์ความผูกพันและความสุขของกำลังพล กองทัพบก
                 </p>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary-light)]/30 text-sm font-medium text-[var(--color-primary-dark)]">
-                    Version 2.1.11
+                    Version 2.1.12
                 </div>
             </motion.div>
 
@@ -531,11 +537,11 @@ function AboutContent() {
                 <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เวอร์ชั่น</p>
-                        <p className="font-bold">2.1.11</p>
+                        <p className="font-bold">2.1.12</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">อัพเดทล่าสุด</p>
-                        <p className="font-bold">21 กุมภาพันธ์ 2569 (v2.1.11)</p>
+                        <p className="font-bold">27 กุมภาพันธ์ 2569 (v2.1.12)</p>
                     </div>
                     <div className="p-3 rounded-xl bg-[var(--color-surface-alt)]">
                         <p className="text-[var(--color-text-secondary)] text-xs">เทคโนโลยี</p>
@@ -555,7 +561,7 @@ function AboutContent() {
                 className="text-center text-xs text-[var(--color-text-light)] py-4"
             >
                 <p> 2026 สงวนลิขสิทธิ์ พล.ท.ดร.กริช อินทราทิพย์</p>
-                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.10</p>
+                <p className="mt-1">RTA Engagement &amp; Happiness Analysis System v2.1.12</p>
             </motion.div>
         </div>
     );

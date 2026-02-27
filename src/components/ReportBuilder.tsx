@@ -65,6 +65,38 @@ export default function ReportBuilder() {
             setProgressLabel(label);
         };
 
+        // Helper: render an off-screen HTML element to a jsPDF image (supports Thai via browser font engine)
+        const renderHtmlToPdfPage = async (
+            html2canvas: typeof import("html2canvas-pro").default,
+            pdf: import("jspdf").jsPDF,
+            htmlContent: string,
+            widthPx: number,
+            heightPx: number,
+            addNew: boolean
+        ) => {
+            const container = document.createElement("div");
+            container.style.cssText = `position:fixed;left:-9999px;top:0;width:${widthPx}px;height:${heightPx}px;overflow:hidden;`;
+            container.innerHTML = htmlContent;
+            document.body.appendChild(container);
+            try {
+                const cvs = await html2canvas(container, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false,
+                    width: widthPx,
+                    height: heightPx,
+                });
+                const img = cvs.toDataURL("image/png");
+                const pageW = pdf.internal.pageSize.getWidth();
+                const pageH = pdf.internal.pageSize.getHeight();
+                if (addNew) pdf.addPage();
+                pdf.addImage(img, "PNG", 0, 0, pageW, pageH, undefined, "FAST");
+            } finally {
+                document.body.removeChild(container);
+            }
+        };
+
         try {
             const html2canvas = (await import("html2canvas-pro")).default;
             const { jsPDF } = await import("jspdf");
@@ -76,27 +108,26 @@ export default function ReportBuilder() {
             const contentW = pageW - margin * 2;
             const contentH = pageH - margin * 2;
 
-            // Cover page
+            // A4 at 96dpi: 794 × 1123px
+            const A4_W = 794;
+            const A4_H = 1123;
+
+            // Cover page — rendered via HTML so Thai text displays correctly
             advance("สร้างหน้าปก...");
-            pdf.setFillColor(26, 26, 46);
-            pdf.rect(0, 0, pageW, pageH, "F");
-            pdf.setTextColor(255, 255, 255);
-            pdf.setFontSize(20);
-            pdf.setFont("helvetica", "bold");
-            pdf.text("RTA Engagement & Happiness", pageW / 2, 60, { align: "center" });
-            pdf.text("Analysis Report", pageW / 2, 72, { align: "center" });
-            pdf.setFontSize(12);
-            pdf.setFont("helvetica", "normal");
-            pdf.setTextColor(180, 180, 200);
-            pdf.text(`จำนวนผู้ตอบ: ${state.surveyData.length.toLocaleString()} คน`, pageW / 2, 90, { align: "center" });
-            pdf.text(`วันที่สร้างรายงาน: ${new Date().toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" })}`, pageW / 2, 100, { align: "center" });
-            pdf.setFontSize(10);
-            pdf.setTextColor(120, 120, 140);
             const sectionNames = sections.map((s) => s.label).join(" · ");
-            const lines = pdf.splitTextToSize(`ประกอบด้วย: ${sectionNames}`, contentW);
-            pdf.text(lines, pageW / 2, 120, { align: "center" });
-            pdf.setTextColor(80, 80, 100);
-            pdf.text("v2.1.7 · RTA Engagement Analysis System", pageW / 2, pageH - 15, { align: "center" });
+            const dateStr = new Date().toLocaleDateString("th-TH", { year: "numeric", month: "long", day: "numeric" });
+            const coverHtml = `
+                <div style="width:${A4_W}px;height:${A4_H}px;background:#1a1a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Sarabun',sans-serif;padding:60px;box-sizing:border-box;">
+                    <div style="color:#b4b4c8;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;">Royal Thai Army</div>
+                    <div style="color:#ffffff;font-size:32px;font-weight:800;text-align:center;line-height:1.3;margin-bottom:8px;">RTA Engagement &amp; Happiness</div>
+                    <div style="color:#ffffff;font-size:26px;font-weight:600;text-align:center;margin-bottom:40px;">Analysis Report</div>
+                    <div style="width:80px;height:3px;background:linear-gradient(90deg,#6c9bcf,#a78bfa);border-radius:2px;margin-bottom:40px;"></div>
+                    <div style="color:#b4b4c8;font-size:15px;margin-bottom:10px;">จำนวนผู้ตอบ: <span style="color:#fff;font-weight:700;">${state.surveyData.length.toLocaleString()} คน</span></div>
+                    <div style="color:#b4b4c8;font-size:15px;margin-bottom:32px;">วันที่สร้างรายงาน: <span style="color:#fff;font-weight:700;">${dateStr}</span></div>
+                    <div style="color:#78788c;font-size:12px;text-align:center;max-width:500px;line-height:1.7;">ประกอบด้วย: ${sectionNames}</div>
+                    <div style="position:absolute;bottom:32px;color:#50506e;font-size:11px;">v2.1.12 · RTA Engagement Analysis System</div>
+                </div>`;
+            await renderHtmlToPdfPage(html2canvas, pdf, coverHtml, A4_W, A4_H, false);
 
             // Capture each section
             for (const section of sections) {
@@ -121,26 +152,28 @@ export default function ReportBuilder() {
                 const totalImgH = (canvas.height * contentW) / canvas.width;
                 const numPages = Math.ceil(totalImgH / contentH);
 
-                // Section header page
+                // Section header band — rendered via HTML canvas for Thai support
                 pdf.addPage();
-                pdf.setFillColor(240, 245, 255);
-                pdf.rect(0, 0, pageW, 30, "F");
-                pdf.setTextColor(30, 60, 120);
-                pdf.setFontSize(14);
-                pdf.setFont("helvetica", "bold");
-                pdf.text(section.label, margin, 20);
-                pdf.setFontSize(9);
-                pdf.setFont("helvetica", "normal");
-                pdf.setTextColor(100, 100, 120);
-                pdf.text(section.description, margin, 27);
+                const headerH = 30; // mm for the header band
+                const hdrContainer = document.createElement("div");
+                hdrContainer.style.cssText = `position:fixed;left:-9999px;top:0;width:${A4_W}px;height:120px;overflow:hidden;`;
+                hdrContainer.innerHTML = `<div style="width:${A4_W}px;height:120px;background:#f0f5ff;font-family:'Sarabun',sans-serif;padding:20px 30px;box-sizing:border-box;border-bottom:3px solid #c7d7f0;">
+                    <div style="color:#1e3c78;font-size:22px;font-weight:800;">${section.label}</div>
+                    <div style="color:#646478;font-size:13px;margin-top:6px;">${section.description}</div>
+                </div>`;
+                document.body.appendChild(hdrContainer);
+                try {
+                    const hdrCanvas = await html2canvas(hdrContainer, { scale: 2, useCORS: true, backgroundColor: null, logging: false, width: A4_W, height: 120 });
+                    const hdrImg = hdrCanvas.toDataURL("image/png");
+                    pdf.addImage(hdrImg, "PNG", 0, 0, pageW, headerH, undefined, "FAST");
+                } finally {
+                    document.body.removeChild(hdrContainer);
+                }
 
                 // Content pages
                 for (let page = 0; page < numPages; page++) {
                     if (page > 0) pdf.addPage();
-                    const yOffset = (page === 0 ? 32 : margin) - page * contentH;
-                    const availH = page === 0 ? contentH - 22 : contentH;
-                    pdf.addImage(imgData, "PNG", margin, page === 0 ? 32 : margin, contentW, totalImgH, undefined, "FAST");
-                    void yOffset; void availH;
+                    pdf.addImage(imgData, "PNG", margin, page === 0 ? headerH + 2 : margin, contentW, totalImgH, undefined, "FAST");
                 }
             }
 
